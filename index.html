@@ -513,7 +513,19 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 // ═══ FIREBASE ═══
-function getFbCfg(){const r=localStorage.getItem('sw_firebase_config');if(!r)return null;try{return JSON.parse(r);}catch{return null;}}
+const DEFAULT_FB_CFG={
+  apiKey:'AIzaSyD45zo_Z3r1SeaBGn7B7o8SzvbyjrhGCQk',
+  authDomain:'service-management-a2704.firebaseapp.com',
+  projectId:'service-management-a2704',
+  storageBucket:'service-management-a2704.firebasestorage.app',
+  messagingSenderId:'902533455410',
+  appId:'1:902533455410:web:033859bf218b0ce7d3a62b'
+};
+function getFbCfg(){
+  const r=localStorage.getItem('sw_firebase_config');
+  if(r){try{const c=JSON.parse(r);if(c&&c.apiKey&&c.projectId)return c;}catch{}}
+  return DEFAULT_FB_CFG;
+}
 function initFb(){
   const cfg=getFbCfg();
   if(!cfg||!cfg.apiKey||!cfg.projectId){setDbStatus(false);loadLocal();return;}
