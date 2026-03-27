@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주요용역 추진현황 | 상원그룹</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a3a5c;--primary-light:#2563a8;--accent:#e8a020;--accent2:#2ecc71;--danger:#e74c3c;--info:#3498db;--bg:#f0f4f8;--card:#fff;--border:#dce3eb;--text:#1e2d3d;--text-muted:#6b7c93;--sidebar-w:220px;}
+*{box-sizing:border-box;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);margin:0;}
+
+/* LOGIN */
+#loginWrap{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a5c 0%,#2563a8 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#fff;border-radius:20px;padding:44px 40px;width:380px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo h1{font-family:'Noto Serif KR',serif;font-size:24px;color:var(--primary);margin:0;}
+.login-logo p{font-size:12px;color:var(--text-muted);margin:4px 0 0;}
+.login-tab{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:22px;}
+.login-tab-btn{flex:1;background:none;border:none;padding:9px;font-size:13.5px;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:'Noto Sans KR',sans-serif;font-weight:500;transition:all .2s;}
+.login-tab-btn.active{color:var(--primary-light);border-bottom-color:var(--primary-light);font-weight:700;}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--primary);display:flex;flex-direction:column;z-index:200;overflow-y:auto;box-shadow:4px 0 20px rgba(0,0,0,.2);}
+.nav-section{padding:16px 0 6px;}
+.nav-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);padding:0 20px 6px;}
+.nav-item-btn{display:flex;align-items:center;gap:10px;width:100%;padding:13px 20px;background:none;border:none;text-align:left;color:rgba(255,255,255,.7);font-size:16px;cursor:pointer;transition:all .2s;font-family:'Noto Sans KR',sans-serif;font-weight:500;}
+.nav-item-btn:hover{background:rgba(255,255,255,.08);color:#fff;}
+.nav-item-btn.active{background:var(--primary-light);color:#fff;border-left:3px solid var(--accent);}
+.nav-item-btn i{width:20px;text-align:center;font-size:15px;}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:56px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.topbar-title{font-size:15px;font-weight:600;color:var(--primary);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.topbar-date{font-size:12px;color:var(--text-muted);}
+#loadingBadge{font-size:11px;background:var(--primary-light);color:#fff;padding:3px 10px;border-radius:10px;display:none;}
+.notif-btn{position:relative;background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .2s;}
+.notif-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-size:10px;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.user-chip{display:flex;align-items:center;gap:7px;background:#f0f4ff;border:1px solid #c8d8f8;border-radius:20px;padding:5px 12px 5px 8px;font-size:12.5px;color:var(--primary);font-weight:600;}
+.user-avatar{width:24px;height:24px;border-radius:50%;background:var(--primary-light);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+.logout-btn{background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;padding:2px 4px;}
+
+/* MAIN */
+#main{margin-left:var(--sidebar-w);margin-top:56px;padding:28px;min-height:calc(100vh - 56px);}
+.page-section{display:none;}
+.page-section.active{display:block;}
+.section-title{font-family:'Noto Serif KR',serif;font-size:19px;color:var(--primary);margin-bottom:22px;padding-bottom:12px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:10px;}
+.section-title i{color:var(--accent);}
+.card{border:1px solid var(--border);border-radius:12px;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.04);}
+.card-header{background:none;border-bottom:1px solid var(--border);padding:14px 20px;font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px;}
+
+/* STAT */
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--card);border-radius:12px;padding:20px;border:1px solid var(--border);border-top:4px solid var(--primary);transition:transform .2s;}
+.stat-card:hover{transform:translateY(-2px);}
+.stat-card.accent{border-top-color:var(--accent);}
+.stat-card.green{border-top-color:var(--accent2);}
+.stat-card.blue{border-top-color:var(--info);}
+.stat-card.red{border-top-color:var(--danger);}
+.stat-num{font-size:32px;font-weight:700;color:var(--primary);}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+/* GRID */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;}
+.recent-list{max-height:260px;overflow-y:auto;}
+.recent-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.recent-item:last-child{border-bottom:none;}
+.recent-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);flex-shrink:0;margin-top:4px;}
+.recent-dot.accent{background:var(--accent);}
+.recent-dot.green{background:var(--accent2);}
+.recent-dot.blue{background:var(--info);}
+.recent-dot.red{background:var(--danger);}
+.recent-content{flex:1;}
+.recent-service-tag{font-size:10px;background:#eef2ff;color:var(--primary-light);padding:1px 7px;border-radius:6px;margin-right:5px;}
+.recent-date{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+/* TABLE */
+.table{font-size:13px;}
+.table th{background:#f7f9fc;color:var(--primary);font-weight:600;font-size:12px;border-color:var(--border);padding:10px 14px;}
+.table td{border-color:var(--border);padding:10px 14px;vertical-align:middle;}
+.table tbody tr:hover{background:#f5f8ff;}
+.badge-type{font-size:11px;padding:3px 9px;border-radius:8px;font-weight:500;}
+.badge-admin{background:#e8f4ff;color:#1a6eb5;}
+.badge-dev{background:#fff3e0;color:#c07800;}
+.badge-status-active{background:#e6f9f0;color:#1a8a4a;}
+.badge-status-pause{background:#fff0f0;color:#c0392b;}
+.badge-status-done{background:#f0f0f0;color:#555;}
+.team-badge{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:500;}
+.team-도시팀{background:#e8f4ff;color:#1a6eb5;}
+.team-재해팀{background:#fff0e8;color:#c05000;}
+.team-환경팀{background:#e6f9f0;color:#1a8a4a;}
+.team-사후팀{background:#f3e8ff;color:#7b2fb5;}
+.team-생태팀{background:#f0fff0;color:#2d8a2d;}
+.req-사장님{background:#fff3e0;color:#c07800;}
+.req-대표님{background:#fde8e8;color:#c0392b;}
+
+/* REPORT TABS */
+.report-tabs{display:flex;gap:0;margin-bottom:22px;border-bottom:2px solid var(--border);}
+.report-tab-btn{background:none;border:none;padding:10px 22px;font-size:13.5px;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:'Noto Sans KR',sans-serif;font-weight:500;transition:all .2s;}
+.report-tab-btn.active{color:var(--primary-light);border-bottom-color:var(--primary-light);font-weight:700;}
+
+/* BUTTONS */
+.btn-primary{background:var(--primary-light);border-color:var(--primary-light);}
+.btn-primary:hover{background:var(--primary);border-color:var(--primary);}
+.btn-sm{font-size:12px;padding:4px 10px;}
+.btn-action{background:none;border:1px solid var(--border);padding:4px 9px;border-radius:6px;font-size:12px;cursor:pointer;transition:all .15s;}
+.btn-action:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+.btn-action.red:hover{background:var(--danger);border-color:var(--danger);}
+
+/* FORM */
+.form-label{font-size:12.5px;font-weight:600;color:var(--primary);margin-bottom:5px;}
+.form-control,.form-select{font-size:13px;border-color:var(--border);border-radius:8px;padding:8px 12px;}
+.form-control:focus,.form-select:focus{border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(37,99,168,.12);}
+textarea.form-control{resize:vertical;min-height:90px;}
+.modal-title{font-family:'Noto Serif KR',serif;font-size:16px;color:var(--primary);}
+.modal-header{border-bottom:2px solid var(--border);}
+.modal-footer{border-top:1px solid var(--border);}
+
+/* ASSIGNEE */
+.assignee-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+.assignee-chip{font-size:11px;background:#e8f0ff;color:var(--primary);padding:2px 9px;border-radius:10px;font-weight:600;}
+
+/* REPLY / PLAN */
+.reply-box{background:#f0f8ff;border:1px solid #b3d6f5;border-radius:8px;padding:10px 13px;margin-top:6px;font-size:13px;}
+.reply-box .rh{font-size:11px;color:var(--primary-light);font-weight:700;margin-bottom:4px;}
+.plan-box{background:#f0fff5;border:1px solid #b3e8c8;border-radius:8px;padding:10px 13px;margin-top:6px;font-size:13px;}
+.plan-box .ph{font-size:11px;color:#1a8a4a;font-weight:700;margin-bottom:4px;}
+
+/* NOTIFICATION */
+#notifPanel{position:fixed;top:56px;right:16px;width:340px;max-height:480px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:500;display:none;overflow:hidden;}
+.notif-panel-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-weight:700;color:var(--primary);}
+.notif-list{overflow-y:auto;max-height:400px;}
+.notif-item{padding:12px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;font-size:12.5px;}
+.notif-item:hover{background:#f5f8ff;}
+.notif-item.unread{border-left:3px solid var(--primary-light);background:#f8fbff;}
+.notif-title{font-weight:600;color:var(--primary);margin-bottom:3px;}
+.notif-body{color:var(--text-muted);}
+.notif-time{font-size:11px;color:#aaa;margin-top:3px;}
+
+/* USER */
+.role-badge{font-size:11px;padding:2px 9px;border-radius:8px;font-weight:600;}
+.role-admin{background:#fde8e8;color:#c0392b;}
+.role-member{background:#e8f4ff;color:#1a6eb5;}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:50px 20px;color:var(--text-muted);}
+.empty-state i{font-size:40px;opacity:.25;margin-bottom:12px;display:block;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:10px;}
+@media(max-width:1100px){.stat-cards{grid-template-columns:repeat(2,1fr);}.dash-grid,.dash-grid-2{grid-template-columns:1fr;}}
+@media(max-width:768px){#sidebar{width:60px;}.nav-label,.nav-item-btn span{display:none;}.nav-item-btn{justify-content:center;padding:12px;}#main{margin-left:60px;}#topbar{left:60px;}}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <h1>상원그룹</h1>
+      <p>주요 프로젝트 관리시스템</p>
+    </div>
+    <div class="login-tab">
+      <button class="login-tab-btn active" id="ltab-login" onclick="switchLT('login')">로그인</button>
+      <button class="login-tab-btn" id="ltab-signup" onclick="switchLT('signup')">회원가입</button>
+    </div>
+    <!-- 로그인 -->
+    <div id="login-form">
+      <div class="mb-3"><label class="form-label">아이디</label><input type="text" class="form-control" id="loginId" placeholder="아이디 입력" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="mb-4"><label class="form-label">비밀번호</label><input type="password" class="form-control" id="loginPw" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn btn-primary w-100" onclick="doLogin()"><i class="fa fa-sign-in-alt me-2"></i>로그인</button>
+      <div id="loginErr" class="text-danger mt-2" style="font-size:12.5px;display:none;"></div>
+      <div class="mt-3 p-2 rounded" style="background:#f7f9fc;font-size:11.5px;color:var(--text-muted);">
+        <b>기본 관리자 계정</b> — ID: <code>admin</code> / PW: <code>admin1234</code>
+      </div>
+    </div>
+    <!-- 회원가입 -->
+    <div id="signup-form" style="display:none;">
+      <div class="mb-3"><label class="form-label">소속/역할 *</label>
+        <select class="form-select" id="signupRole">
+          <option value="">선택하세요</option>
+          <option>대표님</option><option>사장님</option><option>도시팀</option>
+          <option>환경팀</option><option>사후팀</option><option>생태팀</option><option>재해팀</option>
+        </select>
+      </div>
+      <div class="mb-3"><label class="form-label">이름 *</label><input type="text" class="form-control" id="signupName" placeholder="실명 입력"></div>
+      <div class="mb-3"><label class="form-label">아이디 *</label><input type="text" class="form-control" id="signupId" placeholder="영문/숫자 조합"></div>
+      <div class="mb-4"><label class="form-label">비밀번호 *</label><input type="password" class="form-control" id="signupPw" placeholder="4자리 이상"></div>
+      <button class="btn btn-primary w-100" onclick="doSignup()"><i class="fa fa-user-plus me-2"></i>회원가입 신청</button>
+      <div id="signupMsg" class="mt-2" style="font-size:12.5px;display:none;"></div>
+      <div class="mt-3" style="font-size:12px;color:var(--text-muted);text-align:center;">관리자 승인 후 로그인 가능합니다</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SIDEBAR ══ -->
+<div id="sidebar" style="display:none;">
+  <div class="nav-section">
+    <div class="nav-label">메인</div>
+    <button class="nav-item-btn active" onclick="showPage('dashboard',this)"><i class="fa fa-chart-pie"></i><span>대시보드</span></button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">관리</div>
+    <button class="nav-item-btn" onclick="showPage('services',this)"><i class="fa fa-folder-open"></i><span>용역추진사항</span></button>
+    <button class="nav-item-btn" onclick="showPage('reports',this)"><i class="fa fa-file-alt"></i><span>보고내용</span></button>
+  </div>
+  <div id="adminMenuSection" class="nav-section" style="display:none;">
+    <div class="nav-label">관리자</div>
+    <button class="nav-item-btn" onclick="showPage('users',this)"><i class="fa fa-users"></i><span>회원관리</span></button>
+    <button class="nav-item-btn" onclick="showPage('settings',this)"><i class="fa fa-cog"></i><span>Firebase설정</span></button>
+  </div>
+</div>
+
+<!-- ══ TOPBAR ══ -->
+<div id="topbar" style="display:none;">
+  <div class="topbar-title" id="topbarTitle"></div>
+  <div class="topbar-right">
+    <span class="topbar-date" id="todayDate"></span>
+    <span id="loadingBadge"><i class="fa fa-circle-notch fa-spin me-1"></i>동기화중</span>
+    <span id="dbStatusBadge" style="font-size:11px;padding:3px 10px;border-radius:10px;background:#fde8e8;color:#c0392b;">DB미연결</span>
+    <button class="notif-btn" onclick="toggleNotif()" id="notifBtn">
+      <i class="fa fa-bell" style="font-size:15px;"></i>
+      <span class="notif-badge" id="notifCnt" style="display:none;">0</span>
+    </button>
+    <div class="user-chip">
+      <div class="user-avatar" id="uAvatar">?</div>
+      <span id="uLabel">-</span>
+      <button class="logout-btn" onclick="doLogout()" title="로그아웃"><i class="fa fa-sign-out-alt"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NOTIFICATION PANEL ══ -->
+<div id="notifPanel">
+  <div class="notif-panel-header">
+    <span><i class="fa fa-bell me-2" style="color:var(--accent);"></i>알림</span>
+    <button onclick="markAllRead()" style="background:none;border:none;font-size:12px;color:var(--primary-light);cursor:pointer;">모두읽음</button>
+  </div>
+  <div class="notif-list" id="notifList"><div class="empty-state" style="padding:30px 20px;"><i class="fa fa-bell-slash"></i>알림없음</div></div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main" style="display:none;">
+
+  <!-- 대시보드 -->
+  <div class="page-section active" id="page-dashboard">
+    <div style="margin-bottom:22px;">
+      <div style="font-size:15px;font-weight:500;color:var(--text-muted);letter-spacing:2px;margin-bottom:4px;">상원그룹</div>
+      <div style="font-family:'Noto Serif KR',serif;font-size:38px;font-weight:700;color:var(--primary);letter-spacing:-1.5px;line-height:1.15;">주요 프로젝트 관리시스템</div>
+    </div>
+    <hr style="border-color:var(--border);margin-bottom:22px;">
+    <div class="stat-cards">
+      <div class="stat-card blue"><div class="stat-num" id="stat-services">0</div><div class="stat-label"><i class="fa fa-folder me-1"></i>전체 용역</div></div>
+      <div class="stat-card accent"><div class="stat-num" id="stat-requests">0</div><div class="stat-label"><i class="fa fa-hand-paper me-1"></i>요청사항</div></div>
+      <div class="stat-card red"><div class="stat-num" id="stat-instructions">0</div><div class="stat-label"><i class="fa fa-bullhorn me-1"></i>지시사항</div></div>
+      <div class="stat-card green"><div class="stat-num" id="stat-unread">0</div><div class="stat-label"><i class="fa fa-bell me-1"></i>미확인 알림</div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="card"><div class="card-header" style="border-left:4px solid var(--accent);"><i class="fa fa-hand-paper" style="color:var(--accent)"></i>최근 요청사항</div><div class="card-body"><div class="recent-list" id="dash-requests"><div class="empty-state" style="padding:20px;"><i class="fa fa-inbox"></i>없음</div></div></div></div>
+      <div class="card"><div class="card-header" style="border-left:4px solid var(--danger);"><i class="fa fa-bullhorn" style="color:var(--danger)"></i>최근 지시사항</div><div class="card-body"><div class="recent-list" id="dash-instructions"><div class="empty-state" style="padding:20px;"><i class="fa fa-inbox"></i>없음</div></div></div></div>
+    </div>
+    <div class="dash-grid-2">
+      <div class="card"><div class="card-header" style="border-left:4px solid var(--info);"><i class="fa fa-comments" style="color:var(--info)"></i>최근 협의사항</div><div class="card-body"><div class="recent-list" id="dash-consults"><div class="empty-state" style="padding:20px;"><i class="fa fa-inbox"></i>없음</div></div></div></div>
+      <div class="card"><div class="card-header" style="border-left:4px solid var(--accent2);"><i class="fa fa-bell" style="color:var(--accent2)"></i>나의 알림</div><div class="card-body"><div class="recent-list" id="dash-mynotif"><div class="empty-state" style="padding:20px;"><i class="fa fa-bell-slash"></i>없음</div></div></div></div>
+    </div>
+  </div>
+
+  <!-- 용역추진사항 -->
+  <div class="page-section" id="page-services">
+    <div class="section-title"><i class="fa fa-folder-open"></i>용역추진사항<button class="btn btn-primary btn-sm ms-auto" onclick="openSvcModal()"><i class="fa fa-plus me-1"></i>용역추가</button></div>
+    <div class="card mb-3" style="padding:14px 20px;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        <input type="text" class="form-control" style="max-width:220px;font-size:13px;" id="filterKw" placeholder="🔍 용역명·발주처" oninput="renderSvcTable()">
+        <select class="form-select" style="max-width:140px;font-size:13px;" id="filterType" onchange="renderSvcTable()"><option value="">전체구분</option><option>행정계획</option><option>개발사업</option></select>
+        <select class="form-select" style="max-width:140px;font-size:13px;" id="filterSt" onchange="renderSvcTable()"><option value="">전체상태</option><option>진행중</option><option>중지</option><option>준공</option></select>
+      </div>
+    </div>
+    <div class="card"><div class="table-responsive">
+      <table class="table mb-0"><thead><tr><th>No</th><th>용역명</th><th>발주처</th><th>구분</th><th>계약일</th><th>중지일</th><th>준공일</th><th>상태</th><th>협의</th><th>관리</th></tr></thead>
+      <tbody id="svcTbody"><tr><td colspan="10" class="text-center py-5 text-muted">불러오는 중...</td></tr></tbody></table>
+    </div></div>
+    <div id="consultPanel" style="display:none;margin-top:20px;">
+      <div class="card">
+        <div class="card-header"><i class="fa fa-comments text-info me-1"></i><span id="consultTitle">협의사항</span>
+          <button class="btn btn-primary btn-sm ms-auto" onclick="openConModal()"><i class="fa fa-plus me-1"></i>협의추가</button>
+          <button class="btn btn-sm ms-2" style="background:var(--border);border:none;" onclick="closeConPanel()"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="card-body" id="consultBody"><div class="empty-state"><i class="fa fa-comments"></i>협의사항 없음</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 보고내용 -->
+  <div class="page-section" id="page-reports">
+    <div class="section-title"><i class="fa fa-file-alt"></i>보고내용</div>
+    <div class="report-tabs">
+      <button class="report-tab-btn active" id="rtab-req" onclick="showRTab('req')"><i class="fa fa-hand-paper me-1" style="color:var(--accent)"></i>요청사항</button>
+      <button class="report-tab-btn" id="rtab-inst" onclick="showRTab('inst')"><i class="fa fa-bullhorn me-1" style="color:var(--danger)"></i>지시사항</button>
+    </div>
+    <!-- 요청사항 -->
+    <div id="rtab-req-content">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:14px;"><button class="btn btn-primary btn-sm" onclick="openReqModal()"><i class="fa fa-plus me-1"></i>요청사항 추가</button></div>
+      <div class="card"><div class="table-responsive"><table class="table mb-0">
+        <thead><tr><th>용역명</th><th>요청자</th><th>담당자</th><th>요청일</th><th>요청내용</th><th>답변</th><th>관리</th></tr></thead>
+        <tbody id="reqTbody"><tr><td colspan="7" class="text-center py-4 text-muted">데이터없음</td></tr></tbody>
+      </table></div></div>
+    </div>
+    <!-- 지시사항 -->
+    <div id="rtab-inst-content" style="display:none;">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:14px;"><button class="btn btn-primary btn-sm" onclick="openInstModal()"><i class="fa fa-plus me-1"></i>지시사항 추가</button></div>
+      <div class="card"><div class="table-responsive"><table class="table mb-0">
+        <thead><tr><th>용역명</th><th>지시팀</th><th>담당자</th><th>지시일</th><th>지시내용</th><th>조치계획</th><th>관리</th></tr></thead>
+        <tbody id="instTbody"><tr><td colspan="7" class="text-center py-4 text-muted">데이터없음</td></tr></tbody>
+      </table></div></div>
+    </div>
+  </div>
+
+  <!-- 회원관리 -->
+  <div class="page-section" id="page-users">
+    <div class="section-title"><i class="fa fa-users"></i>회원관리<button class="btn btn-primary btn-sm ms-auto" onclick="openUserModal()"><i class="fa fa-user-plus me-1"></i>직접추가</button></div>
+    <div class="card mb-4">
+      <div class="card-header" style="border-left:4px solid var(--danger);"><i class="fa fa-clock" style="color:var(--danger)"></i>가입 승인 대기</div>
+      <div class="card-body"><div class="table-responsive"><table class="table mb-0">
+        <thead><tr><th>이름</th><th>아이디</th><th>소속</th><th>신청일</th><th>처리</th></tr></thead>
+        <tbody id="pendingTbody"><tr><td colspan="5" class="text-center py-3 text-muted">대기없음</td></tr></tbody>
+      </table></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header" style="border-left:4px solid var(--accent2);"><i class="fa fa-check-circle" style="color:var(--accent2)"></i>활성 회원</div>
+      <div class="card-body"><div class="table-responsive"><table class="table mb-0">
+        <thead><tr><th>이름</th><th>아이디</th><th>소속</th><th>권한</th><th>관리</th></tr></thead>
+        <tbody id="usersTbody"><tr><td colspan="5" class="text-center py-3 text-muted">데이터없음</td></tr></tbody>
+      </table></div></div>
+    </div>
+  </div>
+
+  <!-- Firebase설정 -->
+  <div class="page-section" id="page-settings">
+    <div class="section-title"><i class="fa fa-cog"></i>Firebase 설정</div>
+    <div class="card" style="max-width:680px;">
+      <div class="card-header"><i class="fa fa-database me-2"></i>Firebase 연결</div>
+      <div class="card-body">
+        <div style="background:#eef6ff;border:1px solid #b3d4f5;border-radius:10px;padding:12px 16px;font-size:13px;color:#1a4a7a;margin-bottom:16px;"><i class="fa fa-info-circle me-2"></i>Firebase Console → 프로젝트 설정 → 웹앱 추가 후 값을 입력하세요.</div>
+        <div class="row g-3">
+          <div class="col-12"><label class="form-label">API Key</label><input type="text" class="form-control" id="cfg-apiKey" placeholder="AIza..."></div>
+          <div class="col-12"><label class="form-label">Auth Domain</label><input type="text" class="form-control" id="cfg-authDomain"></div>
+          <div class="col-12"><label class="form-label">Project ID</label><input type="text" class="form-control" id="cfg-projectId"></div>
+          <div class="col-12"><label class="form-label">Storage Bucket</label><input type="text" class="form-control" id="cfg-storageBucket"></div>
+          <div class="col-12"><label class="form-label">Messaging Sender ID</label><input type="text" class="form-control" id="cfg-messagingSenderId"></div>
+          <div class="col-12"><label class="form-label">App ID</label><input type="text" class="form-control" id="cfg-appId"></div>
+        </div>
+        <div class="mt-4 d-flex gap-3">
+          <button class="btn btn-primary" onclick="saveFbConfig()"><i class="fa fa-save me-1"></i>저장및연결</button>
+          <button class="btn btn-outline-secondary" onclick="clearFbConfig()"><i class="fa fa-trash me-1"></i>초기화</button>
+        </div>
+        <div id="cfgResult" class="mt-3" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODALS ══ -->
+
+<!-- 용역 모달 -->
+<div class="modal fade" id="svcModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="svcModalTitle">용역 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><input type="hidden" id="svc-id">
+    <div class="row g-3">
+      <div class="col-12"><label class="form-label">용역명 *</label><input type="text" class="form-control" id="svc-name"></div>
+      <div class="col-md-6"><label class="form-label">발주처 *</label><input type="text" class="form-control" id="svc-client"></div>
+      <div class="col-md-6"><label class="form-label">구분</label><select class="form-select" id="svc-type"><option>행정계획</option><option>개발사업</option></select></div>
+      <div class="col-md-4"><label class="form-label">계약일</label><input type="date" class="form-control" id="svc-contract"></div>
+      <div class="col-md-4"><label class="form-label">중지일</label><input type="date" class="form-control" id="svc-suspend"></div>
+      <div class="col-md-4"><label class="form-label">준공일</label><input type="date" class="form-control" id="svc-completion"></div>
+      <div class="col-12"><label class="form-label">비고</label><textarea class="form-control" id="svc-memo" rows="2"></textarea></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button class="btn btn-primary" onclick="saveSvc()"><i class="fa fa-save me-1"></i>저장</button></div>
+</div></div></div>
+
+<!-- 협의 모달 -->
+<div class="modal fade" id="conModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title">협의사항</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><input type="hidden" id="con-id">
+    <div class="row g-3">
+      <div class="col-12"><label class="form-label">관련실과 *</label><input type="text" class="form-control" id="con-dept" placeholder="예: 도시과, 건축과"></div>
+      <div class="col-12">
+        <label class="form-label">주요협의사항 <span style="font-size:11px;font-weight:400;color:var(--text-muted);">(+ 버튼으로 추가)</span></label>
+        <div id="con-topics" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
+        <button type="button" onclick="addTopic()" style="background:#eef4ff;color:var(--primary-light);border:1px dashed var(--primary-light);border-radius:8px;font-size:12.5px;width:100%;padding:7px;cursor:pointer;"><i class="fa fa-plus me-1"></i>항목추가</button>
+      </div>
+      <div class="col-md-6"><label class="form-label">협의일 *</label><input type="date" class="form-control" id="con-date"></div>
+      <div class="col-12"><label class="form-label">주요내용</label><textarea class="form-control" id="con-content" rows="3" placeholder="전반적 내용 (선택)"></textarea></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button class="btn btn-primary" onclick="saveCon()"><i class="fa fa-save me-1"></i>저장</button></div>
+</div></div></div>
+
+<!-- 요청사항 모달 -->
+<div class="modal fade" id="reqModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="reqModalTitle">요청사항 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><input type="hidden" id="req-id">
+    <div class="row g-3">
+      <div class="col-12"><label class="form-label">용역 선택 *</label><select class="form-select" id="req-svcId"></select></div>
+      <div class="col-md-6"><label class="form-label">요청자</label><select class="form-select" id="req-requester"><option>사장님</option><option>대표님</option></select></div>
+      <div class="col-md-6"><label class="form-label">요청일 *</label><input type="date" class="form-control" id="req-date"></div>
+      <div class="col-12">
+        <label class="form-label">담당자 지명 <span style="font-size:11px;font-weight:400;color:var(--text-muted);">(알림 전송)</span></label>
+        <div id="req-assign" style="display:flex;flex-wrap:wrap;gap:8px;padding:10px;background:#f7f9fc;border:1px solid var(--border);border-radius:8px;min-height:44px;font-size:13px;color:var(--text-muted);">회원 없음 (Firebase 연결 후 회원 추가)</div>
+      </div>
+      <div class="col-12"><label class="form-label">요청내용 *</label><textarea class="form-control" id="req-content" rows="4"></textarea></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button class="btn btn-primary" onclick="saveReq()"><i class="fa fa-save me-1"></i>저장</button></div>
+</div></div></div>
+
+<!-- 답변 모달 -->
+<div class="modal fade" id="replyModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title"><i class="fa fa-reply me-2" style="color:var(--info)"></i>요청사항 답변</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><input type="hidden" id="reply-id">
+    <div id="reply-orig" class="mb-3" style="background:#f7f9fc;border-radius:8px;padding:12px;font-size:13px;"></div>
+    <div><label class="form-label">답변내용 *</label><textarea class="form-control" id="reply-content" rows="5" placeholder="답변 내용을 입력하세요"></textarea></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button class="btn btn-primary" onclick="saveReply()"><i class="fa fa-paper-plane me-1"></i>답변저장</button></div>
+</div></div></div>
+
+<!-- 지시사항 모달 -->
+<div class="modal fade" id="instModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="instModalTitle">지시사항 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><input type="hidden" id="inst-id">
+    <div class="row g-3">
+      <div class="col-12"><label class="form-label">용역 선택 *</label><select class="form-select" id="inst-svcId"></select></div>
+      <div class="col-md-6"><label class="form-label">지시팀</label><select class="form-select" id="inst-team"><option>도시팀</option><option>재해팀</option><option>환경팀</option><option>사후팀</option><option>생태팀</option></select></div>
+      <div class="col-md-6"><label class="form-label">지시일 *</label><input type="date" class="form-control" id="inst-date"></div>
+      <div class="col-12">
+        <label class="form-label">담당자 지명 <span style="font-size:11px;font-weight:400;color:var(--text-muted);">(알림 전송)</span></label>
+        <div id="inst-assign" style="display:flex;flex-wrap:wrap;gap:8px;padding:10px;background:#f7f9fc;border:1px solid var(--border);border-radius:8px;min-height:44px;font-size:13px;color:var(--text-muted);">회원 없음</div>
+      </div>
+      <div class="col-12"><label class="form-label">지시내용 *</label><textarea class="form-control" id="inst-content" rows="4"></textarea></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button class="btn btn-primary" onclick="saveInst()"><i class="fa fa-save me-1"></i>저장</button></div>
+</div></div></div>
+
+<!-- 조치계획 모달 -->
+<div class="modal fade" id="planModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title"><i class="fa fa-clipboard-list me-2" style="color:var(--accent2)"></i>조치계획 작성</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><input type="hidden" id="plan-id">
+    <div id="plan-orig" class="mb-3" style="background:#f7f9fc;border-radius:8px;padding:12px;font-size:13px;"></div>
+    <div class="mb-3"><label class="form-label">조치계획 *</label><textarea class="form-control" id="plan-content" rows="5" placeholder="조치 계획을 입력하세요"></textarea></div>
+    <div><label class="form-label">완료예정일</label><input type="date" class="form-control" id="plan-due"></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button class="btn btn-primary" onclick="savePlan()"><i class="fa fa-save me-1"></i>저장</button></div>
+</div></div></div>
+
+<!-- 회원 모달 -->
+<div class="modal fade" id="userModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title">회원 직접추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-12"><label class="form-label">소속/역할 *</label>
+        <select class="form-select" id="um-role"><option value="">선택</option><option>대표님</option><option>사장님</option><option>도시팀</option><option>환경팀</option><option>사후팀</option><option>생태팀</option><option>재해팀</option></select>
+      </div>
+      <div class="col-12"><label class="form-label">이름 *</label><input type="text" class="form-control" id="um-name"></div>
+      <div class="col-12"><label class="form-label">아이디 *</label><input type="text" class="form-control" id="um-id"></div>
+      <div class="col-12"><label class="form-label">비밀번호 *</label><input type="password" class="form-control" id="um-pw" placeholder="4자리 이상"></div>
+      <div class="col-12"><label class="form-label">권한</label><select class="form-select" id="um-admin"><option value="false">일반회원</option><option value="true">관리자</option></select></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button class="btn btn-primary" onclick="saveUser()"><i class="fa fa-save me-1"></i>저장</button></div>
+</div></div></div>
+
+<!-- 확인 모달 -->
+<div class="modal fade" id="confirmModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title">확인</h5></div>
+  <div class="modal-body" id="confirmMsg">삭제하시겠습니까?</div>
+  <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button><button class="btn btn-danger btn-sm" id="confirmOk">확인</button></div>
+</div></div></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script>
+// ═══ 전역 ═══
+let db=null, fbApp=null;
+const COL={services:'services',consultations:'consultations',requests:'requests',instructions:'instructions',users:'users',notifications:'notifications'};
+let C={services:[],consultations:[],requests:[],instructions:[],users:[],notifications:[]};
+let currentUser=null;
+let selSvcId=null;
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('todayDate').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+  const td=new Date().toISOString().split('T')[0];
+  ['req-date','inst-date','con-date','plan-due'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=td;});
+  loadCfgForm();
+  initFb();
+  const saved=sessionStorage.getItem('sw_user');
+  if(saved){try{currentUser=JSON.parse(saved);enterApp();}catch(e){}}
+});
+
+// ═══ FIREBASE ═══
+function getFbCfg(){const r=localStorage.getItem('sw_firebase_config');if(!r)return null;try{return JSON.parse(r);}catch{return null;}}
+function initFb(){
+  const cfg=getFbCfg();
+  if(!cfg||!cfg.apiKey||!cfg.projectId){setDbStatus(false);loadLocal();return;}
+  try{
+    if(firebase.apps.length)firebase.apps.forEach(a=>a.delete());
+    fbApp=firebase.initializeApp(cfg);db=firebase.firestore();setDbStatus(true);
+  }catch(e){console.error(e);setDbStatus(false);loadLocal();}
+}
+function setDbStatus(ok){const e=document.getElementById('dbStatusBadge');if(ok){e.style.background='#e6f9f0';e.style.color='#1a8a4a';e.textContent='✅DB연결';}else{e.style.background='#fff3e0';e.style.color='#c07800';e.textContent='⚠️로컬모드';}}
+function showLoad(v){document.getElementById('loadingBadge').style.display=v?'inline-block':'none';}
+async function loadAll(){
+  showLoad(true);
+  try{await Promise.all(Object.keys(COL).map(k=>loadCol(k)));renderAll();}catch(e){console.error(e);}
+  showLoad(false);
+}
+async function loadCol(name){
+  if(!db)return;
+  const snap=await db.collection(COL[name]).orderBy('createdAt','desc').get();
+  C[name]=snap.docs.map(d=>({id:d.id,...d.data()}));
+}
+async function addDB(col,data){
+  data.createdAt=db?firebase.firestore.FieldValue.serverTimestamp():new Date().toISOString();
+  if(db){const r=await db.collection(COL[col]).add(data);return r.id;}
+  const id='local_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  C[col].unshift({id,...data});saveLocal();return id;
+}
+async function updDB(col,id,data){
+  data.updatedAt=db?firebase.firestore.FieldValue.serverTimestamp():new Date().toISOString();
+  if(db){await db.collection(COL[col]).doc(id).update(data);}
+  else{const i=C[col].findIndex(x=>x.id===id);if(i>=0)C[col][i]={...C[col][i],...data};saveLocal();}
+}
+async function delDB(col,id){
+  if(db){await db.collection(COL[col]).doc(id).delete();}
+  else{C[col]=C[col].filter(x=>x.id!==id);saveLocal();}
+}
+function loadLocal(){const r=localStorage.getItem('sw_svc_data');if(r){try{C=JSON.parse(r);}catch{}}if(currentUser)renderAll();}
+function saveLocal(){localStorage.setItem('sw_svc_data',JSON.stringify(C));}
+
+// ═══ AUTH ═══
+function switchLT(tab){
+  document.getElementById('login-form').style.display=tab==='login'?'block':'none';
+  document.getElementById('signup-form').style.display=tab==='signup'?'block':'none';
+  document.getElementById('ltab-login').classList.toggle('active',tab==='login');
+  document.getElementById('ltab-signup').classList.toggle('active',tab==='signup');
+}
+function hp(pw){return btoa(unescape(encodeURIComponent(pw)));}
+
+async function doLogin(){
+  const id=g('loginId').trim(), pw=g('loginPw').trim();
+  const err=document.getElementById('loginErr');
+  if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';err.style.display='block';return;}
+  let user=null;
+  if(db){
+    try{const snap=await db.collection(COL.users).where('userId','==',id).where('status','==','active').get();
+    if(!snap.empty){const d=snap.docs[0];const u={id:d.id,...d.data()};if(u.pwHash===hp(pw))user=u;}}catch(e){console.error(e);}
+  } else {user=C.users.find(u=>u.userId===id&&u.pwHash===hp(pw)&&u.status==='active');}
+  if(!user&&id==='admin'&&pw==='admin1234'){user={id:'_admin',userId:'admin',name:'관리자',role:'관리자',isAdmin:true,status:'active'};}
+  if(!user){err.textContent='아이디 또는 비밀번호가 올바르지 않습니다.';err.style.display='block';return;}
+  currentUser={uid:user.id,id:user.userId,name:user.name,role:user.role,isAdmin:!!user.isAdmin};
+  sessionStorage.setItem('sw_user',JSON.stringify(currentUser));
+  err.style.display='none';
+  enterApp();
+}
+
+async function doSignup(){
+  const role=g('signupRole'), name=g('signupName').trim(), id=g('signupId').trim(), pw=g('signupPw').trim();
+  const msg=document.getElementById('signupMsg');
+  if(!role||!name||!id||!pw){msg.textContent='모든 항목을 입력하세요.';msg.className='text-danger';msg.style.display='block';return;}
+  if(pw.length<4){msg.textContent='비밀번호 4자리 이상';msg.className='text-danger';msg.style.display='block';return;}
+  if(C.users.find(u=>u.userId===id)){msg.textContent='이미 사용중인 아이디';msg.className='text-danger';msg.style.display='block';return;}
+  const data={userId:id,name,role,pwHash:hp(pw),isAdmin:false,status:'pending'};
+  await addDB('users',data);
+  if(db)await loadCol('users');
+  msg.textContent='가입신청 완료! 관리자 승인 후 로그인 가능합니다.';msg.className='text-success';msg.style.display='block';
+}
+
+function enterApp(){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('sidebar').style.display='flex';
+  document.getElementById('topbar').style.display='flex';
+  document.getElementById('main').style.display='block';
+  if(currentUser.isAdmin)document.getElementById('adminMenuSection').style.display='block';
+  document.getElementById('uLabel').textContent=`${currentUser.name}(${currentUser.role})`;
+  document.getElementById('uAvatar').textContent=currentUser.name.charAt(0);
+  if(db)loadAll(); else loadLocal();
+  subscribeNotif();
+}
+
+function doLogout(){
+  sessionStorage.removeItem('sw_user');currentUser=null;
+  document.getElementById('loginWrap').style.display='flex';
+  ['sidebar','topbar','main'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('loginId').value='';document.getElementById('loginPw').value='';
+}
+
+// ═══ NOTIFICATIONS ═══
+function subscribeNotif(){
+  if(!db||!currentUser)return;
+  db.collection(COL.notifications).where('targetUid','==',currentUser.uid).orderBy('createdAt','desc').onSnapshot(snap=>{
+    C.notifications=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderNotif();
+  });
+}
+async function sendNotif(targetUid,targetName,type,refId,title,body){
+  if(!targetUid)return;
+  await addDB('notifications',{targetUid,targetName,type,refId,title,body,read:false});
+}
+function renderNotif(){
+  const mine=C.notifications.filter(n=>n.targetUid===currentUser?.uid);
+  const unread=mine.filter(n=>!n.read).length;
+  const badge=document.getElementById('notifCnt');
+  badge.textContent=unread>9?'9+':unread;
+  badge.style.display=unread>0?'flex':'none';
+  document.getElementById('stat-unread').textContent=unread;
+  const list=document.getElementById('notifList');
+  if(!mine.length){list.innerHTML='<div class="empty-state" style="padding:30px 20px;"><i class="fa fa-bell-slash"></i>알림없음</div>';return;}
+  list.innerHTML=mine.slice(0,20).map(n=>`<div class="notif-item ${n.read?'':'unread'}" onclick="readNotif('${n.id}','${n.type}')">
+    <div class="notif-title">${n.title||''}</div>
+    <div class="notif-body">${(n.body||'').substring(0,50)}</div>
+    <div class="notif-time">${fmtTs(n.createdAt)}</div>
+  </div>`).join('');
+  // 대시보드
+  const dash=document.getElementById('dash-mynotif');
+  dash.innerHTML=mine.slice(0,5).map(n=>`<div class="recent-item">
+    <div class="recent-dot ${n.read?'':'accent'}"></div>
+    <div class="recent-content"><b>${n.title||''}</b><div class="recent-date">${fmtTs(n.createdAt)}</div></div>
+  </div>`).join('');
+}
+async function readNotif(id,type){
+  if(db)await db.collection(COL.notifications).doc(id).update({read:true});
+  else{const n=C.notifications.find(x=>x.id===id);if(n)n.read=true;}
+  renderNotif();
+  document.getElementById('notifPanel').style.display='none';
+  if(type==='request'){showPage('reports',document.querySelector('[onclick*="reports"]'));showRTab('req');}
+  if(type==='instruction'){showPage('reports',document.querySelector('[onclick*="reports"]'));showRTab('inst');}
+}
+async function markAllRead(){
+  const unread=C.notifications.filter(n=>n.targetUid===currentUser?.uid&&!n.read);
+  for(const n of unread){if(db)await db.collection(COL.notifications).doc(n.id).update({read:true});else n.read=true;}
+  renderNotif();
+}
+function toggleNotif(){const p=document.getElementById('notifPanel');p.style.display=p.style.display==='block'?'none':'block';}
+document.addEventListener('click',e=>{
+  const p=document.getElementById('notifPanel');
+  if(p.style.display==='block'&&!p.contains(e.target)&&!document.getElementById('notifBtn').contains(e.target))p.style.display='none';
+});
+function fmtTs(ts){if(!ts)return '';try{const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})+' '+d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});}catch{return '';}}
+
+// ═══ NAVIGATION ═══
+const PT={dashboard:'',services:'📁 용역추진사항',reports:'📄 보고내용',users:'👥 회원관리',settings:'⚙️ Firebase설정'};
+function showPage(name,el,rTab){
+  document.querySelectorAll('.page-section').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-item-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el)el.classList.add('active');
+  document.getElementById('topbarTitle').textContent=PT[name]||'';
+  if(name==='services')renderSvcTable();
+  if(name==='reports'){renderReports();popSvcSels();popAssignSels();if(rTab)showRTab(rTab);}
+  if(name==='users')renderUsers();
+  if(name==='settings')loadCfgForm();
+}
+
+// ═══ RENDER ALL ═══
+function renderAll(){
+  document.getElementById('stat-services').textContent=C.services.length;
+  document.getElementById('stat-requests').textContent=C.requests.length;
+  document.getElementById('stat-instructions').textContent=C.instructions.length;
+  renderDash();renderSvcTable();renderReports();renderNotif();
+}
+
+// ═══ DASHBOARD ═══
+function renderDash(){
+  rList('dash-requests',C.requests.slice(0,5),r=>`
+    <div class="recent-dot accent"></div><div class="recent-content">
+    <span class="recent-service-tag">${sName(r.serviceId)}</span><span class="req-${r.requester} team-badge">${r.requester}</span>
+    ${r.assignees?.length?`<span style="font-size:11px;color:var(--info);"> → ${r.assignees.map(a=>a.name).join(', ')}</span>`:''}
+    <div style="margin-top:2px;">${(r.content||'').substring(0,45)}${(r.content||'').length>45?'…':''}</div>
+    <div class="recent-date">${r.requestDate||''}</div></div>`);
+  rList('dash-instructions',C.instructions.slice(0,5),r=>`
+    <div class="recent-dot red"></div><div class="recent-content">
+    <span class="recent-service-tag">${sName(r.serviceId)}</span><span class="team-badge team-${r.team}">${r.team}</span>
+    ${r.assignees?.length?`<span style="font-size:11px;color:var(--info);"> → ${r.assignees.map(a=>a.name).join(', ')}</span>`:''}
+    <div style="margin-top:2px;">${(r.content||'').substring(0,45)}${(r.content||'').length>45?'…':''}</div>
+    <div class="recent-date">${r.instructDate||''}</div></div>`);
+  rList('dash-consults',C.consultations.slice(0,5),c=>`
+    <div class="recent-dot blue"></div><div class="recent-content">
+    <span class="recent-service-tag">${sName(c.serviceId)}</span><b>${c.dept||''}</b>
+    <div class="recent-date">${c.date||''}</div></div>`);
+}
+function rList(id,items,fn){const e=document.getElementById(id);if(!items.length){e.innerHTML='<div class="empty-state" style="padding:20px;"><i class="fa fa-inbox"></i>없음</div>';return;}e.innerHTML=items.map(r=>`<div class="recent-item">${fn(r)}</div>`).join('');}
+function sName(sid){const s=C.services.find(x=>x.id===sid);return s?(s.name.length>12?s.name.substring(0,12)+'…':s.name):'미지정';}
+
+// ═══ SERVICES ═══
+function renderSvcTable(){
+  const kw=(g('filterKw')||'').toLowerCase(), tp=g('filterType'), st=g('filterSt');
+  const data=C.services.filter(s=>{
+    if(kw&&!s.name?.toLowerCase().includes(kw)&&!s.client?.toLowerCase().includes(kw))return false;
+    if(tp&&s.type!==tp)return false;
+    if(st&&getSt(s)!==st)return false;
+    return true;
+  });
+  const tb=document.getElementById('svcTbody');
+  if(!data.length){tb.innerHTML='<tr><td colspan="10" class="text-center py-5 text-muted">없음</td></tr>';return;}
+  tb.innerHTML=data.map((s,i)=>{
+    const sv=getSt(s), sb={진행중:'badge-status-active',중지:'badge-status-pause',준공:'badge-status-done'}[sv]||'';
+    const cc=C.consultations.filter(c=>c.serviceId===s.id).length;
+    return `<tr><td>${i+1}</td><td><b>${s.name||''}</b></td><td>${s.client||''}</td>
+    <td><span class="badge-type ${s.type==='행정계획'?'badge-admin':'badge-dev'}">${s.type||''}</span></td>
+    <td>${s.contractDate||'-'}</td><td>${s.suspendDate||'-'}</td><td>${s.completionDate||'-'}</td>
+    <td><span class="badge-type ${sb}">${sv}</span></td>
+    <td><button class="btn-action" onclick="showConPanel('${s.id}','${esc(s.name)}')"><i class="fa fa-comments me-1"></i>${cc}건</button></td>
+    <td><button class="btn-action" onclick="openSvcModal('${s.id}')"><i class="fa fa-pen"></i></button>
+    <button class="btn-action red ms-1" onclick="cfmDel('services','${s.id}')"><i class="fa fa-trash"></i></button></td></tr>`;
+  }).join('');
+}
+function getSt(s){if(s.completionDate)return '준공';if(s.suspendDate)return '중지';return '진행중';}
+
+// ═══ CONSULTATION ═══
+function showConPanel(sid,name){selSvcId=sid;document.getElementById('consultTitle').textContent=`[${name}] 협의사항`;renderConPanel();document.getElementById('consultPanel').style.display='block';document.getElementById('consultPanel').scrollIntoView({behavior:'smooth'});}
+function closeConPanel(){document.getElementById('consultPanel').style.display='none';selSvcId=null;}
+function renderConPanel(){
+  const items=C.consultations.filter(c=>c.serviceId===selSvcId).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const body=document.getElementById('consultBody');
+  if(!items.length){body.innerHTML='<div class="empty-state"><i class="fa fa-comments"></i>협의사항 없음</div>';return;}
+  const grp={};items.forEach(c=>{const k=c.dept||'미지정';if(!grp[k])grp[k]=[];grp[k].push(c);});
+  body.innerHTML=Object.keys(grp).map(dept=>{
+    const list=grp[dept];
+    const rows=list.map((c,i)=>{
+      const topH=c.topics?.length?`<ul style="margin:5px 0;padding-left:0;list-style:none;">${c.topics.map((t,ti)=>`<li style="font-size:13px;display:flex;gap:7px;margin-bottom:3px;align-items:baseline;"><span style="flex-shrink:0;background:var(--primary-light);color:#fff;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">${ti+1}</span><span>${t}</span></li>`).join('')}</ul>`:'';
+      const cntH=c.content?`<div style="font-size:12.5px;color:var(--text-muted);margin-top:3px;border-left:3px solid var(--border);padding-left:8px;">${nl2br(c.content)}</div>`:'';
+      return `<div style="display:flex;gap:14px;padding:10px 0;border-bottom:${i<list.length-1?'1px dashed #e0e8f0':'none'};">
+        <div style="flex-shrink:0;width:72px;text-align:center;"><div style="font-size:12px;font-weight:600;color:var(--primary-light);">${c.date||'-'}</div></div>
+        <div style="flex:1;">${topH}${cntH}</div>
+        <div style="flex-shrink:0;display:flex;gap:4px;align-items:flex-start;">
+          <button class="btn-action" onclick="openConModal('${c.id}')"><i class="fa fa-pen"></i></button>
+          <button class="btn-action red" onclick="cfmDel('consultations','${c.id}',renderConPanel)"><i class="fa fa-trash"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div style="border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden;">
+      <div style="background:linear-gradient(90deg,var(--primary),var(--primary-light));padding:10px 16px;display:flex;align-items:center;gap:8px;">
+        <i class="fa fa-building" style="color:rgba(255,255,255,.8);font-size:13px;"></i>
+        <span style="color:#fff;font-weight:700;font-size:14px;">${dept}</span>
+        <span style="margin-left:auto;background:rgba(255,255,255,.2);color:#fff;font-size:11px;padding:2px 9px;border-radius:10px;">${list.length}건</span>
+      </div>
+      <div style="padding:4px 16px 6px;">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══ REPORTS ═══
+function showRTab(tab){
+  ['req','inst'].forEach(t=>{document.getElementById('rtab-'+t+'-content').style.display=t===tab?'block':'none';document.getElementById('rtab-'+t).classList.toggle('active',t===tab);});
+}
+function renderReports(){
+  // 요청사항
+  const reqTb=document.getElementById('reqTbody');
+  if(!C.requests.length){reqTb.innerHTML='<tr><td colspan="7" class="text-center py-4 text-muted">데이터없음</td></tr>';}
+  else{reqTb.innerHTML=C.requests.map(r=>{
+    const aH=r.assignees?.length?`<div class="assignee-chips">${r.assignees.map(a=>`<span class="assignee-chip">${a.name}</span>`).join('')}</div>`:'<span style="color:#ccc;font-size:11px;">미지정</span>';
+    const repH=r.reply?`<div class="reply-box"><div class="rh"><i class="fa fa-reply me-1"></i>답변 · ${r.replyDate||''} (${r.replyBy||''})</div>${r.reply}</div>`
+      :`<button class="btn-action" onclick="openReplyModal('${r.id}')" style="font-size:11px;color:var(--info);border-color:var(--info);"><i class="fa fa-reply me-1"></i>답변작성</button>`;
+    return `<tr><td><b>${sName(r.serviceId)}</b></td><td><span class="req-${r.requester} team-badge">${r.requester}</span></td>
+    <td>${aH}</td><td>${r.requestDate||''}</td><td style="max-width:200px;">${r.content||''}</td>
+    <td style="min-width:160px;">${repH}</td>
+    <td><button class="btn-action" onclick="openReqModal('${r.id}')"><i class="fa fa-pen"></i></button>
+    <button class="btn-action red ms-1" onclick="cfmDel('requests','${r.id}')"><i class="fa fa-trash"></i></button></td></tr>`;
+  }).join('');}
+  // 지시사항
+  const instTb=document.getElementById('instTbody');
+  if(!C.instructions.length){instTb.innerHTML='<tr><td colspan="7" class="text-center py-4 text-muted">데이터없음</td></tr>';}
+  else{instTb.innerHTML=C.instructions.map(r=>{
+    const aH=r.assignees?.length?`<div class="assignee-chips">${r.assignees.map(a=>`<span class="assignee-chip">${a.name}</span>`).join('')}</div>`:'<span style="color:#ccc;font-size:11px;">미지정</span>';
+    const plH=r.plan?`<div class="plan-box"><div class="ph"><i class="fa fa-clipboard-list me-1"></i>조치계획 ${r.planDue?'· 완료예정 '+r.planDue:''} (${r.planBy||''})</div>${r.plan}</div>`
+      :`<button class="btn-action" onclick="openPlanModal('${r.id}')" style="font-size:11px;color:var(--accent2);border-color:var(--accent2);"><i class="fa fa-clipboard-list me-1"></i>계획작성</button>`;
+    return `<tr><td><b>${sName(r.serviceId)}</b></td><td><span class="team-badge team-${r.team}">${r.team}</span></td>
+    <td>${aH}</td><td>${r.instructDate||''}</td><td style="max-width:200px;">${r.content||''}</td>
+    <td style="min-width:160px;">${plH}</td>
+    <td><button class="btn-action" onclick="openInstModal('${r.id}')"><i class="fa fa-pen"></i></button>
+    <button class="btn-action red ms-1" onclick="cfmDel('instructions','${r.id}')"><i class="fa fa-trash"></i></button></td></tr>`;
+  }).join('');}
+}
+
+// ═══ ASSIGN SELECTS ═══
+function popSvcSels(){
+  const opts=C.services.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  ['req-svcId','inst-svcId'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML='<option value="">-- 선택 --</option>'+opts;});
+}
+function popAssignSels(){
+  const users=C.users.filter(u=>u.status==='active');
+  ['req-assign','inst-assign'].forEach(listId=>{
+    const el=document.getElementById(listId);if(!el)return;
+    if(!users.length){el.innerHTML='<span style="font-size:13px;color:var(--text-muted);">활성 회원 없음</span>';return;}
+    el.innerHTML='';
+    users.forEach(u=>{
+      const lbl=document.createElement('label');
+      lbl.style.cssText='display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;background:#f0f4f8;border:1px solid var(--border);border-radius:8px;padding:4px 10px;';
+      lbl.innerHTML=`<input type="checkbox" value="${u.id}" data-name="${u.name}" data-role="${u.role}" style="cursor:pointer;"> ${u.name} <span style="font-size:10px;color:var(--text-muted);">(${u.role})</span>`;
+      el.appendChild(lbl);
+    });
+  });
+}
+function getAssignees(listId){
+  const el=document.getElementById(listId);if(!el)return[];
+  return [...el.querySelectorAll('input[type=checkbox]:checked')].map(c=>({uid:c.value,name:c.dataset.name,role:c.dataset.role}));
+}
+function setAssignees(listId,assignees){
+  if(!assignees?.length)return;
+  setTimeout(()=>{
+    const el=document.getElementById(listId);if(!el)return;
+    assignees.forEach(a=>{const c=el.querySelector(`input[value="${a.uid}"]`);if(c)c.checked=true;});
+  },120);
+}
+
+// ═══ SVC MODAL ═══
+function openSvcModal(id){
+  const m=new bootstrap.Modal(document.getElementById('svcModal'));
+  cf(['svc-id','svc-name','svc-client','svc-contract','svc-suspend','svc-completion','svc-memo']);
+  document.getElementById('svc-type').value='행정계획';
+  if(id){const s=C.services.find(x=>x.id===id);if(s){document.getElementById('svcModalTitle').textContent='용역 수정';sv('svc-id',s.id);sv('svc-name',s.name||'');sv('svc-client',s.client||'');document.getElementById('svc-type').value=s.type||'행정계획';sv('svc-contract',s.contractDate||'');sv('svc-suspend',s.suspendDate||'');sv('svc-completion',s.completionDate||'');sv('svc-memo',s.memo||'');}}
+  else{document.getElementById('svcModalTitle').textContent='용역 추가';}
+  m.show();
+}
+async function saveSvc(){
+  const name=g('svc-name').trim(), client=g('svc-client').trim();
+  if(!name||!client){alert('용역명과 발주처는 필수');return;}
+  const data={name,client,type:g('svc-type'),contractDate:g('svc-contract'),suspendDate:g('svc-suspend'),completionDate:g('svc-completion'),memo:g('svc-memo')};
+  const id=g('svc-id');showLoad(true);
+  if(id){await updDB('services',id,data);const i=C.services.findIndex(x=>x.id===id);if(i>=0)C.services[i]={...C.services[i],...data};}
+  else{await addDB('services',data);if(db)await loadCol('services');}
+  showLoad(false);bootstrap.Modal.getInstance(document.getElementById('svcModal')).hide();renderAll();
+}
+
+// ═══ CON MODAL ═══
+function addTopic(val){
+  const list=document.getElementById('con-topics');const idx=list.children.length;
+  const div=document.createElement('div');div.style.cssText='display:flex;gap:6px;align-items:center;';
+  div.innerHTML=`<span style="flex-shrink:0;background:var(--primary-light);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">${idx+1}</span><input type="text" class="form-control topic-inp" placeholder="협의사항 내용" value="${val||''}" style="flex:1;"><button type="button" onclick="this.parentElement.remove();reIdx();" style="background:none;border:1px solid #fcc;border-radius:6px;padding:4px 9px;cursor:pointer;color:var(--danger);font-size:12px;"><i class="fa fa-times"></i></button>`;
+  list.appendChild(div);
+}
+function reIdx(){[...document.getElementById('con-topics').children].forEach((d,i)=>{const b=d.querySelector('span');if(b)b.textContent=i+1;});}
+function openConModal(id){
+  const m=new bootstrap.Modal(document.getElementById('conModal'));
+  cf(['con-id','con-dept','con-content']);document.getElementById('con-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('con-topics').innerHTML='';
+  if(id){const c=C.consultations.find(x=>x.id===id);if(c){sv('con-id',c.id);sv('con-dept',c.dept||'');sv('con-date',c.date||'');sv('con-content',c.content||'');(c.topics||[]).forEach(t=>addTopic(t));}}
+  if(!document.getElementById('con-topics').children.length)addTopic();
+  m.show();
+}
+async function saveCon(){
+  const dept=g('con-dept').trim();if(!dept){alert('관련실과 필수');return;}
+  const topics=[...document.querySelectorAll('#con-topics .topic-inp')].map(e=>e.value.trim()).filter(v=>v);
+  const content=g('con-content').trim();
+  if(!topics.length&&!content){alert('주요협의사항 또는 주요내용 입력');return;}
+  const data={serviceId:selSvcId,dept,topics,date:g('con-date'),content};
+  const id=g('con-id');showLoad(true);
+  if(id){await updDB('consultations',id,data);const i=C.consultations.findIndex(x=>x.id===id);if(i>=0)C.consultations[i]={...C.consultations[i],...data};}
+  else{await addDB('consultations',data);if(db)await loadCol('consultations');}
+  showLoad(false);bootstrap.Modal.getInstance(document.getElementById('conModal')).hide();renderConPanel();renderDash();renderSvcTable();
+}
+
+// ═══ REQ MODAL ═══
+function openReqModal(id){
+  popSvcSels();popAssignSels();
+  const m=new bootstrap.Modal(document.getElementById('reqModal'));
+  cf(['req-id','req-content']);document.getElementById('req-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('req-requester').value='사장님';
+  if(id){const r=C.requests.find(x=>x.id===id);if(r){document.getElementById('reqModalTitle').textContent='요청사항 수정';sv('req-id',r.id);document.getElementById('req-svcId').value=r.serviceId||'';document.getElementById('req-requester').value=r.requester||'사장님';sv('req-date',r.requestDate||'');sv('req-content',r.content||'');setAssignees('req-assign',r.assignees);}}
+  else{document.getElementById('reqModalTitle').textContent='요청사항 추가';}
+  m.show();
+}
+async function saveReq(){
+  const svcId=g('req-svcId'),content=g('req-content').trim();
+  if(!svcId||!content){alert('용역과 내용 필수');return;}
+  const assignees=getAssignees('req-assign');
+  const data={serviceId:svcId,requester:g('req-requester'),requestDate:g('req-date'),content,assignees};
+  const id=g('req-id');showLoad(true);
+  let nId=id;
+  if(id){await updDB('requests',id,data);const i=C.requests.findIndex(x=>x.id===id);if(i>=0)C.requests[i]={...C.requests[i],...data};}
+  else{nId=await addDB('requests',data);if(db)await loadCol('requests');}
+  for(const a of assignees)await sendNotif(a.uid,a.name,'request',nId,`[요청사항] ${sName(svcId)}`,`${data.requester}의 요청: ${content.substring(0,40)}`);
+  showLoad(false);bootstrap.Modal.getInstance(document.getElementById('reqModal')).hide();renderAll();
+}
+
+// ═══ REPLY MODAL ═══
+function openReplyModal(reqId){
+  const r=C.requests.find(x=>x.id===reqId);if(!r)return;
+  sv('reply-id',reqId);sv('reply-content',r.reply||'');
+  document.getElementById('reply-orig').innerHTML=`<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">[${sName(r.serviceId)}] ${r.requester} · ${r.requestDate||''}</div><div>${r.content||''}</div>`;
+  new bootstrap.Modal(document.getElementById('replyModal')).show();
+}
+async function saveReply(){
+  const id=g('reply-id'),reply=g('reply-content').trim();if(!reply){alert('답변 입력');return;}
+  const data={reply,replyDate:new Date().toISOString().split('T')[0],replyBy:currentUser?.name||''};
+  showLoad(true);await updDB('requests',id,data);const i=C.requests.findIndex(x=>x.id===id);if(i>=0)C.requests[i]={...C.requests[i],...data};
+  showLoad(false);bootstrap.Modal.getInstance(document.getElementById('replyModal')).hide();renderReports();
+}
+
+// ═══ INST MODAL ═══
+function openInstModal(id){
+  popSvcSels();popAssignSels();
+  const m=new bootstrap.Modal(document.getElementById('instModal'));
+  cf(['inst-id','inst-content']);document.getElementById('inst-date').value=new Date().toISOString().split('T')[0];
+  if(id){const r=C.instructions.find(x=>x.id===id);if(r){document.getElementById('instModalTitle').textContent='지시사항 수정';sv('inst-id',r.id);document.getElementById('inst-svcId').value=r.serviceId||'';document.getElementById('inst-team').value=r.team||'도시팀';sv('inst-date',r.instructDate||'');sv('inst-content',r.content||'');setAssignees('inst-assign',r.assignees);}}
+  else{document.getElementById('instModalTitle').textContent='지시사항 추가';}
+  m.show();
+}
+async function saveInst(){
+  const svcId=g('inst-svcId'),content=g('inst-content').trim();
+  if(!svcId||!content){alert('용역과 내용 필수');return;}
+  const assignees=getAssignees('inst-assign');
+  const data={serviceId:svcId,team:g('inst-team'),instructDate:g('inst-date'),content,assignees};
+  const id=g('inst-id');showLoad(true);
+  let nId=id;
+  if(id){await updDB('instructions',id,data);const i=C.instructions.findIndex(x=>x.id===id);if(i>=0)C.instructions[i]={...C.instructions[i],...data};}
+  else{nId=await addDB('instructions',data);if(db)await loadCol('instructions');}
+  for(const a of assignees)await sendNotif(a.uid,a.name,'instruction',nId,`[지시사항] ${sName(svcId)}`,`${data.team} 지시: ${content.substring(0,40)}`);
+  showLoad(false);bootstrap.Modal.getInstance(document.getElementById('instModal')).hide();renderAll();
+}
+
+// ═══ PLAN MODAL ═══
+function openPlanModal(instId){
+  const r=C.instructions.find(x=>x.id===instId);if(!r)return;
+  sv('plan-id',instId);sv('plan-content',r.plan||'');sv('plan-due',r.planDue||'');
+  document.getElementById('plan-orig').innerHTML=`<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">[${sName(r.serviceId)}] <span class="team-badge team-${r.team}">${r.team}</span> · ${r.instructDate||''}</div><div>${r.content||''}</div>`;
+  new bootstrap.Modal(document.getElementById('planModal')).show();
+}
+async function savePlan(){
+  const id=g('plan-id'),plan=g('plan-content').trim();if(!plan){alert('조치계획 입력');return;}
+  const data={plan,planDue:g('plan-due'),planBy:currentUser?.name||''};
+  showLoad(true);await updDB('instructions',id,data);const i=C.instructions.findIndex(x=>x.id===id);if(i>=0)C.instructions[i]={...C.instructions[i],...data};
+  showLoad(false);bootstrap.Modal.getInstance(document.getElementById('planModal')).hide();renderReports();
+}
+
+// ═══ USER MANAGEMENT ═══
+function renderUsers(){
+  const pending=C.users.filter(u=>u.status==='pending');
+  const pTb=document.getElementById('pendingTbody');
+  pTb.innerHTML=pending.length?pending.map(u=>`<tr><td><b>${u.name}</b></td><td>${u.userId}</td><td><span class="team-badge team-${u.role}">${u.role}</span></td>
+    <td>${(u.createdAt||'').toString().substring(0,10)}</td>
+    <td><button class="btn btn-sm btn-success me-1" onclick="approveUser('${u.id}')"><i class="fa fa-check me-1"></i>승인</button>
+    <button class="btn btn-sm btn-danger" onclick="cfmDel('users','${u.id}',renderUsers)"><i class="fa fa-times me-1"></i>거절</button></td></tr>`).join('')
+    :'<tr><td colspan="5" class="text-center py-3 text-muted">대기없음</td></tr>';
+  const active=C.users.filter(u=>u.status==='active');
+  const uTb=document.getElementById('usersTbody');
+  uTb.innerHTML=active.length?active.map(u=>`<tr><td><b>${u.name}</b></td><td>${u.userId}</td><td><span class="team-badge team-${u.role}">${u.role}</span></td>
+    <td><span class="role-badge ${u.isAdmin?'role-admin':'role-member'}">${u.isAdmin?'관리자':'일반회원'}</span></td>
+    <td><button class="btn-action" onclick="toggleAdmin('${u.id}',${!u.isAdmin})">${u.isAdmin?'권한해제':'관리자승격'}</button>
+    <button class="btn-action red ms-1" onclick="cfmDel('users','${u.id}',renderUsers)"><i class="fa fa-trash"></i></button></td></tr>`).join('')
+    :'<tr><td colspan="5" class="text-center py-3 text-muted">없음</td></tr>';
+}
+async function approveUser(uid){await updDB('users',uid,{status:'active'});if(db)await loadCol('users');renderUsers();}
+async function toggleAdmin(uid,isAdmin){await updDB('users',uid,{isAdmin});if(db)await loadCol('users');renderUsers();}
+function openUserModal(){cf(['um-name','um-id','um-pw']);document.getElementById('um-role').value='';document.getElementById('um-admin').value='false';new bootstrap.Modal(document.getElementById('userModal')).show();}
+async function saveUser(){
+  const role=g('um-role'),name=g('um-name').trim(),id=g('um-id').trim(),pw=g('um-pw').trim();
+  if(!role||!name||!id||!pw){alert('모든 항목 입력');return;}
+  if(C.users.find(u=>u.userId===id)){alert('중복 아이디');return;}
+  const data={userId:id,name,role,pwHash:hp(pw),isAdmin:g('um-admin')==='true',status:'active'};
+  showLoad(true);await addDB('users',data);if(db)await loadCol('users');showLoad(false);
+  bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();renderUsers();
+}
+
+// ═══ DELETE ═══
+function cfmDel(col,id,cb){
+  const m=new bootstrap.Modal(document.getElementById('confirmModal'));
+  document.getElementById('confirmMsg').textContent='정말 삭제하시겠습니까?';
+  document.getElementById('confirmOk').onclick=async()=>{
+    showLoad(true);await delDB(col,id);if(db)await loadCol(col);showLoad(false);
+    bootstrap.Modal.getInstance(document.getElementById('confirmModal')).hide();
+    if(cb)cb();renderAll();
+  };
+  m.show();
+}
+
+// ═══ FIREBASE CONFIG ═══
+function loadCfgForm(){const c=getFbCfg();if(!c)return;['apiKey','authDomain','projectId','storageBucket','messagingSenderId','appId'].forEach(k=>{const e=document.getElementById('cfg-'+k);if(e)e.value=c[k]||'';});}
+function saveFbConfig(){
+  const c={apiKey:g('cfg-apiKey'),authDomain:g('cfg-authDomain'),projectId:g('cfg-projectId'),storageBucket:g('cfg-storageBucket'),messagingSenderId:g('cfg-messagingSenderId'),appId:g('cfg-appId')};
+  if(!c.apiKey||!c.projectId){cfgRes(false,'API Key와 Project ID 필수');return;}
+  localStorage.setItem('sw_firebase_config',JSON.stringify(c));
+  try{if(firebase.apps.length)firebase.apps.forEach(a=>a.delete());fbApp=firebase.initializeApp(c);db=firebase.firestore();setDbStatus(true);if(currentUser)loadAll();cfgRes(true,'연결 성공!');}catch(e){cfgRes(false,'연결 실패: '+e.message);}
+}
+function clearFbConfig(){if(!confirm('초기화?'))return;localStorage.removeItem('sw_firebase_config');loadCfgForm();db=null;setDbStatus(false);}
+function cfgRes(ok,msg){const e=document.getElementById('cfgResult');e.style.display='block';e.className=ok?'alert alert-success mt-3':'alert alert-danger mt-3';e.textContent=msg;setTimeout(()=>e.style.display='none',4000);}
+
+// ═══ UTILS ═══
+function g(id){return document.getElementById(id)?.value||'';}
+function sv(id,v){const e=document.getElementById(id);if(e)e.value=v;}
+function cf(ids){ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';})}
+function nl2br(s){return(s||'').replace(/\n/g,'<br>');}
+function esc(s){return(s||'').replace(/'/g,"\\'");}
+</script>
+</body>
+</html>
