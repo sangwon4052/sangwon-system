@@ -538,13 +538,28 @@ function setDbStatus(ok){const e=document.getElementById('dbStatusBadge');if(ok)
 function showLoad(v){document.getElementById('loadingBadge').style.display=v?'inline-block':'none';}
 async function loadAll(){
   showLoad(true);
-  try{await Promise.all(Object.keys(COL).map(k=>loadCol(k)));renderAll();}catch(e){console.error(e);}
+  try{
+    // 각 컬렉션을 독립적으로 로딩 - 하나 실패해도 나머지는 정상 로딩
+    await Promise.allSettled(Object.keys(COL).map(k=>loadCol(k)));
+    renderAll();
+  }catch(e){console.error('loadAll error:',e);}
   showLoad(false);
 }
 async function loadCol(name){
   if(!db)return;
-  const snap=await db.collection(COL[name]).orderBy('createdAt','desc').get();
-  C[name]=snap.docs.map(d=>({id:d.id,...d.data()}));
+  try{
+    // orderBy 제거 - 인덱스 없이도 모든 기기에서 안정적으로 로딩
+    const snap=await db.collection(COL[name]).get();
+    C[name]=snap.docs.map(d=>({id:d.id,...d.data()}));
+    // JavaScript에서 날짜 기준 내림차순 정렬
+    C[name].sort((a,b)=>{
+      const ta=a.createdAt?.toDate?a.createdAt.toDate():new Date(a.createdAt||0);
+      const tb=b.createdAt?.toDate?b.createdAt.toDate():new Date(b.createdAt||0);
+      return tb-ta;
+    });
+  }catch(e){
+    console.error('loadCol error:',name,e);
+  }
 }
 async function addDB(col,data){
   data.createdAt=db?firebase.firestore.FieldValue.serverTimestamp():new Date().toISOString();
@@ -630,8 +645,13 @@ function doLogout(){
 // ═══ NOTIFICATIONS ═══
 function subscribeNotif(){
   if(!db||!currentUser)return;
-  db.collection(COL.notifications).where('targetUid','==',currentUser.uid).orderBy('createdAt','desc').onSnapshot(snap=>{
+  db.collection(COL.notifications).where('targetUid','==',currentUser.uid).onSnapshot(snap=>{
     C.notifications=snap.docs.map(d=>({id:d.id,...d.data()}));
+    C.notifications.sort((a,b)=>{
+      const ta=a.createdAt?.toDate?a.createdAt.toDate():new Date(a.createdAt||0);
+      const tb=b.createdAt?.toDate?b.createdAt.toDate():new Date(b.createdAt||0);
+      return tb-ta;
+    });
     renderNotif();
   });
 }
