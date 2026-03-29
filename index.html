@@ -131,9 +131,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 .tag{font-size:12px;padding:2px 8px;border-radius:6px;font-weight:600;}
 .tag-dev{background:#fff7ed;color:#c2410c;}
 .tag-adm{background:#eff6ff;color:#1d4ed8;}
-.tag-on{background:#f0fdf4;color:#15803d;}
-.tag-stop{background:#fff1f2;color:#be123c;}
-.tag-done{background:#f8fafc;color:#475569;}
+.tag-on{background:#eff6ff;color:#1d4ed8;}
+.tag-stop{background:#fff7ed;color:#c2410c;}
+.tag-done{background:#fef2f2;color:#dc2626;}
 .svc-actions{display:flex;gap:4px;flex-shrink:0;}
 .ia{background:none;border:1.5px solid var(--bd);border-radius:7px;padding:4px 8px;font-size:12px;cursor:pointer;color:var(--tm);transition:all .15s;}
 .ia:hover{background:var(--pl);color:#fff;border-color:var(--pl);}
@@ -209,9 +209,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 .badge{font-size:10.5px;padding:3px 9px;border-radius:6px;font-weight:600;}
 .badge-adm{background:#eff6ff;color:#1d4ed8;}
 .badge-dev{background:#fff7ed;color:#c2410c;}
-.badge-on{background:#f0fdf4;color:#15803d;}
-.badge-stop{background:#fff1f2;color:#be123c;}
-.badge-done{background:#f8fafc;color:#475569;}
+.badge-on{background:#eff6ff;color:#1d4ed8;}
+.badge-stop{background:#fff7ed;color:#c2410c;}
+.badge-done{background:#fef2f2;color:#dc2626;}
 .badge-admin{background:#fef2f2;color:#dc2626;}
 .badge-member{background:#eff6ff;color:#1d4ed8;}
 .tbadge{font-size:11px;padding:2px 9px;border-radius:6px;font-weight:600;}
@@ -380,29 +380,39 @@ textarea.form-control{resize:vertical;min-height:90px;}
         <div class="dash-hero-sub">Sangwon Group</div>
         <div class="dash-hero-title">주요 프로젝트<br>관리시스템</div>
       </div>
-      <div class="stat-grid">
+      <div class="stat-grid" style="grid-template-columns:repeat(5,1fr);">
         <div class="sc blue"><div class="sc-num" id="stat-s">0</div><div class="sc-lbl">전체 용역</div><i class="fa fa-folder sc-icon"></i></div>
+        <div class="sc" style="border-top:3px solid #8b5cf6;"><div class="sc-num" id="stat-sa">0</div><div class="sc-lbl">전체 영업</div><i class="fa fa-briefcase sc-icon"></i></div>
         <div class="sc amber"><div class="sc-num" id="stat-r">0</div><div class="sc-lbl">요청사항</div><i class="fa fa-hand-paper sc-icon"></i></div>
         <div class="sc red"><div class="sc-num" id="stat-i">0</div><div class="sc-lbl">지시사항</div><i class="fa fa-bullhorn sc-icon"></i></div>
         <div class="sc green"><div class="sc-num" id="stat-n">0</div><div class="sc-lbl">미확인 알림</div><i class="fa fa-bell sc-icon"></i></div>
       </div>
-      <div class="dash-grid">
+      <!-- Row 1: 용역협의사항 | 최근지시사항 -->
+      <div class="dash-grid" style="grid-template-columns:1fr 1fr;margin-bottom:14px;">
         <div class="dash-card">
-          <div class="dc-head" style="border-left:3px solid var(--acc);"><i class="fa fa-hand-paper" style="color:var(--acc);"></i>최근 요청사항</div>
-          <div class="dc-body" id="dash-req"><div class="empty" style="padding:20px;"><i class="fa fa-inbox"></i><p>없음</p></div></div>
+          <div class="dc-head" style="border-left:3px solid var(--inf);"><i class="fa fa-comments" style="color:var(--inf);"></i>용역 협의사항</div>
+          <div class="dc-body" id="dash-con"><div class="empty" style="padding:20px;"><i class="fa fa-inbox"></i><p>없음</p></div></div>
         </div>
         <div class="dash-card">
           <div class="dc-head" style="border-left:3px solid var(--r);"><i class="fa fa-bullhorn" style="color:var(--r);"></i>최근 지시사항</div>
           <div class="dc-body" id="dash-inst"><div class="empty" style="padding:20px;"><i class="fa fa-inbox"></i><p>없음</p></div></div>
         </div>
+      </div>
+      <!-- Row 2: 영업협의사항 | 최근요청사항 -->
+      <div class="dash-grid" style="grid-template-columns:1fr 1fr;margin-bottom:14px;">
         <div class="dash-card">
-          <div class="dc-head" style="border-left:3px solid var(--inf);"><i class="fa fa-comments" style="color:var(--inf);"></i>최근 협의사항</div>
-          <div class="dc-body" id="dash-con"><div class="empty" style="padding:20px;"><i class="fa fa-inbox"></i><p>없음</p></div></div>
+          <div class="dc-head" style="border-left:3px solid #8b5cf6;"><i class="fa fa-comments" style="color:#8b5cf6;"></i>영업 협의사항</div>
+          <div class="dc-body" id="dash-sale-con"><div class="empty" style="padding:20px;"><i class="fa fa-inbox"></i><p>없음</p></div></div>
         </div>
         <div class="dash-card">
-          <div class="dc-head" style="border-left:3px solid var(--g);"><i class="fa fa-bell" style="color:var(--g);"></i>나의 알림</div>
-          <div class="dc-body" id="dash-notif"><div class="empty" style="padding:20px;"><i class="fa fa-bell-slash"></i><p>없음</p></div></div>
+          <div class="dc-head" style="border-left:3px solid var(--acc);"><i class="fa fa-hand-paper" style="color:var(--acc);"></i>최근 요청사항</div>
+          <div class="dc-body" id="dash-req"><div class="empty" style="padding:20px;"><i class="fa fa-inbox"></i><p>없음</p></div></div>
         </div>
+      </div>
+      <!-- Row 3: 나의 알림 (전체폭) -->
+      <div class="dash-card" style="width:100%;">
+        <div class="dc-head" style="border-left:3px solid var(--g);"><i class="fa fa-bell" style="color:var(--g);"></i>나의 알림</div>
+        <div class="dc-body" id="dash-notif"><div class="empty" style="padding:20px;"><i class="fa fa-bell-slash"></i><p>없음</p></div></div>
       </div>
     </div>
   </div>
@@ -410,33 +420,58 @@ textarea.form-control{resize:vertical;min-height:90px;}
   <!-- 용역추진사항 -->
   <div class="pg" id="pg-services">
     <div class="split">
-      <!-- 왼쪽: 용역 목록 -->
+      <!-- 왼쪽: 탭 + 목록 -->
       <div class="split-left">
-        <div class="split-header">
-          <div class="split-header-title"><i class="fa fa-folder-open" style="color:var(--acc);"></i>용역 목록</div>
-          <button class="btn-add" onclick="openSvcModal()"><i class="fa fa-plus"></i>용역추가</button>
+        <!-- 탭 -->
+        <div class="rtab-bar">
+          <button class="rtab-btn active" id="svctab-svc" onclick="showSvcTab('svc')"><i class="fa fa-folder-open" style="color:var(--acc);margin-right:5px;"></i>용역 목록</button>
+          <button class="rtab-btn" id="svctab-sale" onclick="showSvcTab('sale')"><i class="fa fa-briefcase" style="color:#8b5cf6;margin-right:5px;"></i>영업 목록</button>
         </div>
-        <div class="filter-bar">
-          <input type="text" id="filterKw" placeholder="🔍 용역명 · 발주처 검색" oninput="renderSvcList()">
-          <select id="filterType" onchange="renderSvcList()" style="width:110px;">
-            <option value="">전체구분</option><option>행정계획</option><option>개발사업</option>
-          </select>
-          <select id="filterSt" onchange="renderSvcList()" style="width:100px;">
-            <option value="">전체상태</option><option>진행중</option><option>중지</option><option>준공</option>
-          </select>
+        <!-- 용역 -->
+        <div id="svc-wrap" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+          <div class="split-header">
+            <div class="split-header-title"><i class="fa fa-folder-open" style="color:var(--acc);"></i>용역 목록</div>
+            <button class="btn-add" onclick="openSvcModal('svc')"><i class="fa fa-plus"></i>용역추가</button>
+          </div>
+          <div class="filter-bar">
+            <input type="text" id="filterKw" placeholder="🔍 용역명 · 발주처 검색" oninput="renderSvcList()">
+            <select id="filterType" onchange="renderSvcList()" style="width:110px;">
+              <option value="">전체구분</option><option>행정계획</option><option>개발사업</option>
+            </select>
+            <select id="filterSt" onchange="renderSvcList()" style="width:100px;">
+              <option value="">전체상태</option><option>진행중</option><option>중지</option><option>준공</option>
+            </select>
+          </div>
+          <div class="split-body" id="svcList"><div class="empty"><i class="fa fa-folder-open"></i><p>용역이 없습니다</p></div></div>
         </div>
-        <div class="split-body" id="svcList"><div class="empty"><i class="fa fa-folder-open"></i><p>용역이 없습니다</p></div></div>
+        <!-- 영업 -->
+        <div id="sale-wrap" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+          <div class="split-header">
+            <div class="split-header-title"><i class="fa fa-briefcase" style="color:#8b5cf6;"></i>영업 목록</div>
+            <button class="btn-add" style="background:linear-gradient(135deg,#7c3aed,#8b5cf6);" onclick="openSvcModal('sale')"><i class="fa fa-plus"></i>영업추가</button>
+          </div>
+          <div class="filter-bar">
+            <input type="text" id="filterSaleKw" placeholder="🔍 영업명 · 발주처 검색" oninput="renderSaleList()">
+            <select id="filterSaleType" onchange="renderSaleList()" style="width:110px;">
+              <option value="">전체구분</option><option>행정계획</option><option>개발사업</option>
+            </select>
+            <select id="filterSaleSt" onchange="renderSaleList()" style="width:100px;">
+              <option value="">전체상태</option><option>진행중</option><option>중지</option><option>준공</option>
+            </select>
+          </div>
+          <div class="split-body" id="saleList"><div class="empty"><i class="fa fa-briefcase"></i><p>영업이 없습니다</p></div></div>
+        </div>
       </div>
       <!-- 오른쪽: 협의사항 -->
       <div class="split-right">
-        <div class="split-right-inner" id="conPanel">
+        <div class="split-right-inner">
           <div class="rp-empty" id="conEmpty">
             <i class="fa fa-mouse-pointer"></i>
-            <p>왼쪽에서 용역을 선택하면<br>협의사항이 표시됩니다</p>
+            <p>왼쪽에서 항목을 선택하면<br>협의사항이 표시됩니다</p>
           </div>
-          <div id="conContent" style="display:none;flex:1;display:none;flex-direction:column;">
+          <div id="conContent" style="display:none;flex:1;flex-direction:column;">
             <div class="rp-title" id="conTitle"><i class="fa fa-comments" style="color:var(--inf);"></i><span></span>
-              <button class="btn-add" style="margin-left:auto;font-size:12px;padding:7px 14px;" onclick="openConModal()"><i class="fa fa-plus"></i>협의추가</button>
+              <button class="btn-add" style="margin-left:auto;font-size:12px;padding:7px 14px;" onclick="curSvcTab==='sale'?openSaleConModal():openConModal()"><i class="fa fa-plus"></i>협의추가</button>
             </div>
             <div class="rp-body" id="conBody"></div>
           </div>
@@ -541,14 +576,21 @@ textarea.form-control{resize:vertical;min-height:90px;}
 <!-- 용역 모달 -->
 <div class="modal fade" id="svcModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
   <div class="modal-header"><h5 class="modal-title" id="svcModalTitle">용역 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-  <div class="modal-body"><input type="hidden" id="svc-id">
+  <div class="modal-body"><input type="hidden" id="svc-id"><input type="hidden" id="svcModalType" value="svc">
     <div class="row g-3">
       <div class="col-12"><label class="form-label">용역명 *</label><input type="text" class="form-control" id="svc-name"></div>
       <div class="col-md-6"><label class="form-label">발주처 *</label><input type="text" class="form-control" id="svc-client"></div>
       <div class="col-md-6"><label class="form-label">구분</label><select class="form-select" id="svc-type"><option>행정계획</option><option>개발사업</option></select></div>
-      <div class="col-md-4"><label class="form-label">계약일</label><input type="date" class="form-control" id="svc-contract"></div>
-      <div class="col-md-4"><label class="form-label">중지일</label><input type="date" class="form-control" id="svc-suspend"></div>
-      <div class="col-md-4"><label class="form-label">준공일</label><input type="date" class="form-control" id="svc-completion"></div>
+      <div class="col-md-6"><label class="form-label">상태 *</label>
+        <select class="form-select" id="svc-status">
+          <option value="진행중">🔵 진행중</option>
+          <option value="중지">🟠 중지</option>
+          <option value="준공">🔴 준공</option>
+        </select>
+      </div>
+      <div class="col-md-6"><label class="form-label">계약일</label><input type="date" class="form-control" id="svc-contract"></div>
+      <div class="col-md-6"><label class="form-label">중지일</label><input type="date" class="form-control" id="svc-suspend"></div>
+      <div class="col-md-6"><label class="form-label">준공일</label><input type="date" class="form-control" id="svc-completion"></div>
       <div class="col-12"><label class="form-label">비고</label><textarea class="form-control" id="svc-memo" rows="2"></textarea></div>
     </div>
   </div>
@@ -557,8 +599,8 @@ textarea.form-control{resize:vertical;min-height:90px;}
 
 <!-- 협의 모달 -->
 <div class="modal fade" id="conModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
-  <div class="modal-header"><h5 class="modal-title">협의사항</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-  <div class="modal-body"><input type="hidden" id="con-id">
+  <div class="modal-header"><h5 class="modal-title" id="conModalLabel">협의사항</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><input type="hidden" id="con-id"><input type="hidden" id="conModalType" value="svc">
     <div class="row g-3">
       <div class="col-12"><label class="form-label">관련실과 *</label><input type="text" class="form-control" id="con-dept" placeholder="예: 도시과, 건축과"></div>
       <div class="col-12">
@@ -631,9 +673,9 @@ textarea.form-control{resize:vertical;min-height:90px;}
 <script>
 // ═══ 전역 ═══
 let db=null,fbApp=null;
-const COL={services:'services',consultations:'consultations',requests:'requests',instructions:'instructions',users:'users',notifications:'notifications'};
-let C={services:[],consultations:[],requests:[],instructions:[],users:[],notifications:[]};
-let currentUser=null,selSvcId=null,selRepId=null,curRepTab='req';
+const COL={services:'services',consultations:'consultations',sales:'sales',salesConsultations:'salesConsultations',requests:'requests',instructions:'instructions',users:'users',notifications:'notifications'};
+let C={services:[],consultations:[],sales:[],salesConsultations:[],requests:[],instructions:[],users:[],notifications:[]};
+let currentUser=null,selSvcId=null,selSaleId=null,selRepId=null,curRepTab='req',curSvcTab='svc';
 
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('todayDate').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
@@ -796,7 +838,7 @@ function showPage(name,el,rTab){
   document.getElementById('pg-'+name).classList.add('active');
   if(el)el.classList.add('active');
   document.getElementById('topbarTitle').textContent=PT[name]||'';
-  if(name==='services'){renderSvcList();}
+  if(name==='services'){renderSvcList();renderSaleList();}
   if(name==='reports'){renderRepLists();popSvcSels();popAssignSels();if(rTab)showRTab(rTab);}
   if(name==='users')renderUsers();
   if(name==='settings')loadCfgForm();
@@ -805,9 +847,10 @@ function showPage(name,el,rTab){
 // ═══ RENDER ALL ═══
 function renderAll(){
   document.getElementById('stat-s').textContent=C.services.length;
+  document.getElementById('stat-sa').textContent=C.sales.length;
   document.getElementById('stat-r').textContent=C.requests.length;
   document.getElementById('stat-i').textContent=C.instructions.length;
-  renderDash();renderSvcList();renderRepLists();renderNotif();
+  renderDash();renderSvcList();renderSaleList();renderRepLists();renderNotif();
 }
 
 // ═══ DASHBOARD ═══
@@ -815,9 +858,22 @@ function renderDash(){
   rList('dash-req',C.requests.slice(0,5),r=>`<div class="rdot" style="background:#f59e0b;margin-top:4px;"></div><div class="recent-content"><span class="rtag">${sName(r.serviceId)}</span><span class="tbadge req-${r.requester}">${r.requester}</span>${r.assignees?.length?`<span style="font-size:11px;color:var(--pl);"> → ${r.assignees.map(a=>a.name).join(', ')}</span>`:''}<div class="rdate">${r.requestDate||''}</div></div>`);
   rList('dash-inst',C.instructions.slice(0,5),r=>`<div class="rdot" style="background:var(--r);margin-top:4px;"></div><div class="recent-content"><span class="rtag">${sName(r.serviceId)}</span><span class="tbadge t${r.team}">${r.team}</span><div class="rdate">${r.instructDate||''}</div></div>`);
   rList('dash-con',C.consultations.slice(0,5),c=>`<div class="rdot" style="background:var(--inf);margin-top:4px;"></div><div class="recent-content"><span class="rtag">${sName(c.serviceId)}</span><b style="font-size:12.5px;">${c.dept||''}</b><div class="rdate">${c.date||''}</div></div>`);
+  rList('dash-sale-con',C.salesConsultations.slice(0,5),c=>`<div class="rdot" style="background:#8b5cf6;margin-top:4px;"></div><div class="recent-content"><span class="rtag" style="background:#f5f3ff;color:#7c3aed;">${saleName(c.saleId)}</span><b style="font-size:12.5px;">${c.dept||''}</b><div class="rdate">${c.date||''}</div></div>`);
 }
 function rList(id,items,fn){const e=document.getElementById(id);if(!items.length){e.innerHTML='<div class="empty" style="padding:20px;"><i class="fa fa-inbox"></i><p>없음</p></div>';return;}e.innerHTML=items.map(r=>`<div class="ri">${fn(r)}</div>`).join('');}
 function sName(sid){const s=C.services.find(x=>x.id===sid);return s?(s.name.length>14?s.name.substring(0,14)+'…':s.name):'미지정';}
+function saleName(sid){const s=C.sales.find(x=>x.id===sid);return s?(s.name.length>14?s.name.substring(0,14)+'…':s.name):'미지정';}
+
+// ═══ SVC TAB ═══
+function showSvcTab(tab){
+  curSvcTab=tab;
+  selSvcId=null;selSaleId=null;
+  document.getElementById('svctab-svc').classList.toggle('active',tab==='svc');
+  document.getElementById('svctab-sale').classList.toggle('active',tab==='sale');
+  document.getElementById('svc-wrap').style.display=tab==='svc'?'flex':'none';
+  document.getElementById('sale-wrap').style.display=tab==='sale'?'flex':'none';
+  showConEmpty();
+}
 
 // ═══ SERVICE LIST ═══
 function renderSvcList(){
@@ -845,16 +901,88 @@ function renderSvcList(){
         <span class="tag ${stag}">${sv}</span>
       </div>
       <div class="svc-actions">
-        <button class="ia" onclick="event.stopPropagation();openSvcModal('${s.id}')"><i class="fa fa-pen"></i></button>
+        <button class="ia" onclick="event.stopPropagation();openSvcModal('${s.id}','svc')"><i class="fa fa-pen"></i></button>
         <button class="ia del" onclick="event.stopPropagation();cfmDel('services','${s.id}',()=>{if(selSvcId==='${s.id}'){selSvcId=null;showConEmpty();}renderSvcList();})"><i class="fa fa-trash"></i></button>
       </div>
     </div>`;
   }).join('');
 }
-function getSt(s){if(s.completionDate)return '준공';if(s.suspendDate)return '중지';return '진행중';}
+function getSt(s){if(s.status)return s.status;if(s.completionDate)return '준공';if(s.suspendDate)return '중지';return '진행중';}
+
+// ═══ SALES LIST ═══
+function renderSaleList(){
+  const kw=(g('filterSaleKw')||'').toLowerCase(),tp=g('filterSaleType'),st=g('filterSaleSt');
+  const data=C.sales.filter(s=>{
+    if(kw&&!s.name?.toLowerCase().includes(kw)&&!s.client?.toLowerCase().includes(kw))return false;
+    if(tp&&s.type!==tp)return false;
+    if(st&&getSt(s)!==st)return false;
+    return true;
+  });
+  const el=document.getElementById('saleList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="fa fa-briefcase"></i><p>영업이 없습니다</p></div>';return;}
+  el.innerHTML=data.map((s,i)=>{
+    const sv2=getSt(s);
+    const stag={진행중:'tag-on',중지:'tag-stop',준공:'tag-done'}[sv2]||'';
+    const ttag=s.type==='행정계획'?'tag-adm':'tag-dev';
+    return `<div class="svc-item ${selSaleId===s.id?'sel':''}" onclick="selSale('${s.id}',this)">
+      <div class="svc-no">${i+1}</div>
+      <div class="svc-main">
+        <div class="svc-name">${s.name||''}</div>
+        <div class="svc-sub">${s.client||''} ${s.contractDate?'· '+s.contractDate:''}</div>
+      </div>
+      <div class="svc-badges">
+        <span class="tag ${ttag}">${s.type||''}</span>
+        <span class="tag ${stag}">${sv2}</span>
+      </div>
+      <div class="svc-actions">
+        <button class="ia" onclick="event.stopPropagation();openSvcModal('${s.id}','sale')"><i class="fa fa-pen"></i></button>
+        <button class="ia del" onclick="event.stopPropagation();cfmDel('sales','${s.id}',()=>{if(selSaleId==='${s.id}'){selSaleId=null;showConEmpty();}renderSaleList();})"><i class="fa fa-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selSale(sid,el){
+  selSaleId=sid;selSvcId=null;
+  document.querySelectorAll('.svc-item').forEach(x=>x.classList.remove('sel'));
+  if(el)el.classList.add('sel');
+  renderSaleConPanel();
+}
+function renderSaleConPanel(){
+  if(!selSaleId){showConEmpty();return;}
+  const sale=C.sales.find(x=>x.id===selSaleId);
+  document.getElementById('conEmpty').style.display='none';
+  const cc=document.getElementById('conContent');
+  cc.style.display='flex';
+  document.getElementById('conTitle').querySelector('span').textContent=`[${sale?.name||''}] 협의사항`;
+  document.getElementById('conTitle').querySelector('i').style.color='#8b5cf6';
+  const items=C.salesConsultations.filter(c=>c.saleId===selSaleId).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const body=document.getElementById('conBody');
+  if(!items.length){body.innerHTML='<div class="empty"><i class="fa fa-comments"></i><p>협의사항이 없습니다</p></div>';return;}
+  const grp={};items.forEach(c=>{const k=c.dept||'미지정';if(!grp[k])grp[k]=[];grp[k].push(c);});
+  body.innerHTML=Object.keys(grp).map(dept=>{
+    const list=grp[dept];
+    const rows=list.map(c=>{
+      const topH=c.topics?.length?`<ul class="con-topics">${c.topics.map((t,ti)=>`<li><span class="con-num" style="background:#8b5cf6;">${ti+1}</span><span>${t}</span></li>`).join('')}</ul>`:'';
+      const cntH=c.content?`<div class="con-note">${nl2br(c.content)}</div>`:'';
+      return `<div class="con-row">
+        <div class="con-date">${c.date||'-'}</div>
+        <div class="con-content">${topH}${cntH}</div>
+        <div class="con-acts">
+          <button class="ia" onclick="openSaleConModal('${c.id}')"><i class="fa fa-pen"></i></button>
+          <button class="ia del" onclick="cfmDel('salesConsultations','${c.id}',renderSaleConPanel)"><i class="fa fa-trash"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="dept-block">
+      <div class="dept-head" style="background:linear-gradient(90deg,#5b21b6,#7c3aed);"><i class="fa fa-building"></i><span>${dept}</span><span class="dept-cnt">${list.length}건</span></div>
+      ${rows}
+    </div>`;
+  }).join('');
+}
 
 function selSvc(sid,el){
-  selSvcId=sid;
+  selSvcId=sid;selSaleId=null;
   document.querySelectorAll('.svc-item').forEach(x=>x.classList.remove('sel'));
   if(el)el.classList.add('sel');
   renderConPanel();
@@ -862,6 +990,9 @@ function selSvc(sid,el){
 function showConEmpty(){
   document.getElementById('conEmpty').style.display='flex';
   document.getElementById('conContent').style.display='none';
+  // 아이콘 색상 초기화
+  const icon=document.getElementById('conTitle')?.querySelector('i');
+  if(icon)icon.style.color='var(--inf)';
 }
 
 // ═══ CONSULTATION PANEL ═══
@@ -872,6 +1003,7 @@ function renderConPanel(){
   const cc=document.getElementById('conContent');
   cc.style.display='flex';
   document.getElementById('conTitle').querySelector('span').textContent=`[${svc?.name||''}] 협의사항`;
+  document.getElementById('conTitle').querySelector('i').style.color='var(--inf)';
   const items=C.consultations.filter(c=>c.serviceId===selSvcId).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const body=document.getElementById('conBody');
   if(!items.length){body.innerHTML='<div class="empty"><i class="fa fa-comments"></i><p>협의사항이 없습니다</p></div>';return;}
@@ -1070,23 +1202,57 @@ function openRepEdit(){if(curRepTab==='req'&&selRepId)openReqModal(selRepId);els
 function delRepItem(){if(curRepTab==='req'&&selRepId)cfmDel('requests',selRepId,()=>{showRepEmpty();renderReqList();renderDash();});else if(selRepId)cfmDel('instructions',selRepId,()=>{showRepEmpty();renderInstList();renderDash();});}
 
 // ═══ SVC MODAL ═══
-function openSvcModal(id){
-  const m=new bootstrap.Modal(document.getElementById('svcModal'));
+// tabType: 'svc' 또는 'sale' (신규 추가 시)
+// editId: 실제 문서 ID (수정 시)
+// editType: 수정 시 어느 컬렉션인지 ('svc' or 'sale')
+function openSvcModal(tabTypeOrEditId, editType2){
+  // 1. 신규인지 수정인지 판단
+  const isNew=(tabTypeOrEditId==='svc'||tabTypeOrEditId==='sale');
+  const tabType=isNew?tabTypeOrEditId:(editType2||curSvcTab);
+  const editId=isNew?null:tabTypeOrEditId;
+
+  // 2. hidden 필드에 타입 기록
+  document.getElementById('svcModalType').value=tabType;
+
+  // 3. 모달 초기화
   cf(['svc-id','svc-name','svc-client','svc-contract','svc-suspend','svc-completion','svc-memo']);
+  document.getElementById('svc-status').value='진행중';
   document.getElementById('svc-type').value='행정계획';
-  if(id){const s=C.services.find(x=>x.id===id);if(s){document.getElementById('svcModalTitle').textContent='용역 수정';sv('svc-id',s.id);sv('svc-name',s.name||'');sv('svc-client',s.client||'');document.getElementById('svc-type').value=s.type||'행정계획';sv('svc-contract',s.contractDate||'');sv('svc-suspend',s.suspendDate||'');sv('svc-completion',s.completionDate||'');sv('svc-memo',s.memo||'');}}
-  else document.getElementById('svcModalTitle').textContent='용역 추가';
-  m.show();
+  document.getElementById('svcModalTitle').textContent=(tabType==='sale'?'영업':'용역')+(editId?' 수정':' 추가');
+
+  // 4. 수정일 경우 기존 데이터 로드
+  if(editId){
+    const col=tabType==='sale'?C.sales:C.services;
+    const s=col.find(x=>x.id===editId);
+    if(s){
+      sv('svc-id',s.id);
+      sv('svc-name',s.name||'');
+      sv('svc-client',s.client||'');
+      document.getElementById('svc-type').value=s.type||'행정계획';
+      document.getElementById('svc-status').value=getSt(s);
+      sv('svc-contract',s.contractDate||'');
+      sv('svc-suspend',s.suspendDate||'');
+      sv('svc-completion',s.completionDate||'');
+      sv('svc-memo',s.memo||'');
+    }
+  }
+
+  new bootstrap.Modal(document.getElementById('svcModal')).show();
 }
 async function saveSvc(){
   const name=g('svc-name').trim(),client=g('svc-client').trim();
   if(!name||!client){showToast('용역명과 발주처는 필수입니다.','danger');return;}
-  const data={name,client,type:g('svc-type'),contractDate:g('svc-contract'),suspendDate:g('svc-suspend'),completionDate:g('svc-completion'),memo:g('svc-memo')};
-  const id=g('svc-id');showLoad(true);
-  if(id){await updDB('services',id,data);const i=C.services.findIndex(x=>x.id===id);if(i>=0)C.services[i]={...C.services[i],...data};}
-  else{await addDB('services',data);if(db)await loadCol('services');}
-  showLoad(false);bootstrap.Modal.getInstance(document.getElementById('svcModal')).hide();renderSvcList();renderDash();
-  document.getElementById('stat-s').textContent=C.services.length;
+  const data={name,client,type:g('svc-type'),status:g('svc-status'),contractDate:g('svc-contract'),suspendDate:g('svc-suspend'),completionDate:g('svc-completion'),memo:g('svc-memo')};
+  const id=g('svc-id');
+  const isSale=document.getElementById('svcModalType').value==='sale';
+  const colName=isSale?'sales':'services';
+  showLoad(true);
+  if(id){await updDB(colName,id,data);const col=isSale?C.sales:C.services;const i=col.findIndex(x=>x.id===id);if(i>=0)col[i]={...col[i],...data};}
+  else{await addDB(colName,data);if(db)await loadCol(colName);}
+  showLoad(false);bootstrap.Modal.getInstance(document.getElementById('svcModal')).hide();
+  if(isSale){renderSaleList();document.getElementById('stat-sa').textContent=C.sales.length;}
+  else{renderSvcList();document.getElementById('stat-s').textContent=C.services.length;}
+  renderDash();
 }
 
 // ═══ CON MODAL ═══
@@ -1098,11 +1264,25 @@ function addTopic(val){
 }
 function reIdx(){[...document.getElementById('con-topics').children].forEach((d,i)=>{const b=d.querySelector('span');if(b)b.textContent=i+1;});}
 function openConModal(id){
+  // 용역 협의사항
+  document.getElementById('conModalType').value='svc';
   const m=new bootstrap.Modal(document.getElementById('conModal'));
   cf(['con-id','con-dept','con-content']);document.getElementById('con-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('con-topics').innerHTML='';
   if(id){const c=C.consultations.find(x=>x.id===id);if(c){sv('con-id',c.id);sv('con-dept',c.dept||'');sv('con-date',c.date||'');sv('con-content',c.content||'');(c.topics||[]).forEach(t=>addTopic(t));}}
   if(!document.getElementById('con-topics').children.length)addTopic();
+  document.getElementById('conModalLabel').textContent='협의사항 (용역)';
+  m.show();
+}
+function openSaleConModal(id){
+  // 영업 협의사항
+  document.getElementById('conModalType').value='sale';
+  const m=new bootstrap.Modal(document.getElementById('conModal'));
+  cf(['con-id','con-dept','con-content']);document.getElementById('con-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('con-topics').innerHTML='';
+  if(id){const c=C.salesConsultations.find(x=>x.id===id);if(c){sv('con-id',c.id);sv('con-dept',c.dept||'');sv('con-date',c.date||'');sv('con-content',c.content||'');(c.topics||[]).forEach(t=>addTopic(t));}}
+  if(!document.getElementById('con-topics').children.length)addTopic();
+  document.getElementById('conModalLabel').textContent='협의사항 (영업)';
   m.show();
 }
 async function saveCon(){
