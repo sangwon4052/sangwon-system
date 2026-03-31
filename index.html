@@ -340,6 +340,17 @@ textarea.form-control{resize:vertical;min-height:90px;}
     <button class="sb-btn" onclick="showPage('users',this)"><i class="fa fa-users"></i><span>회원관리</span></button>
     <button class="sb-btn" onclick="showPage('settings',this)"><i class="fa fa-cog"></i><span>Firebase설정</span></button>
   </div>
+  <!-- 저장/불러오기 -->
+  <div style="padding:16px 16px 24px;margin-top:auto;border-top:1px solid rgba(255,255,255,.07);">
+    <div style="font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px;padding-left:6px;font-weight:600;">데이터 백업</div>
+    <button onclick="exportData()" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:rgba(255,255,255,.8);font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:8px;transition:all .18s;">
+      <i class="fa fa-download" style="font-size:13px;"></i><span>전체 저장</span>
+    </button>
+    <label style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:rgba(255,255,255,.8);font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .18s;">
+      <i class="fa fa-upload" style="font-size:13px;"></i><span>불러오기</span>
+      <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+    </label>
+  </div>
 </div>
 
 <!-- ══ TOPBAR ══ -->
@@ -621,7 +632,7 @@ textarea.form-control{resize:vertical;min-height:90px;}
   <div class="modal-body"><input type="hidden" id="req-id">
     <div class="row g-3">
       <div class="col-12"><label class="form-label">용역 선택 *</label><select class="form-select" id="req-svcId"></select></div>
-      <div class="col-md-6"><label class="form-label">요청자</label><select class="form-select" id="req-requester"><option>사장님</option><option>대표님</option></select></div>
+      <div class="col-md-6"><label class="form-label">요청자 *</label><select class="form-select" id="req-requester"><option value="">-- 선택 --</option></select></div>
       <div class="col-md-6"><label class="form-label">요청일 *</label><input type="date" class="form-control" id="req-date"></div>
       <div class="col-12"><label class="form-label">담당자 지명 <span style="font-size:11px;font-weight:400;">(알림전송)</span></label><div class="assign-box" id="req-assign"></div></div>
       <div class="col-12"><label class="form-label">요청내용 *</label><textarea class="form-control" id="req-content" rows="4"></textarea></div>
@@ -809,7 +820,24 @@ function renderNotif(){
   list.innerHTML=mine.slice(0,20).map(n=>`<div class="ni ${n.read?'':'unread'}" onclick="readNotif('${n.id}','${n.type}')">
     <div class="ni-title">${n.title||''}</div><div class="ni-body">${(n.body||'').substring(0,50)}</div><div class="ni-time">${fmtTs(n.createdAt)}</div>
   </div>`).join('');
-  document.getElementById('dash-notif').innerHTML=mine.slice(0,5).map(n=>`<div class="ri"><div class="rdot" style="background:${n.read?'#cbd5e1':'#f59e0b'};"></div><div><b style="font-size:12.5px;">${n.title||''}</b><div class="rdate">${fmtTs(n.createdAt)}</div></div></div>`).join('');
+  // 나의 알림: 답변완료 요청사항 알림 완전 제외 (읽음 여부 무관)
+  const dashNotifs=mine.filter(n=>{
+    if(n.type==='request'&&n.refId){
+      const req=C.requests.find(x=>x.id===n.refId);
+      if(req&&req.reply)return false; // 답변완료 요청 제외
+    }
+    if((n.type==='instruction'||n.type==='plan')&&n.refId){
+      const inst=C.instructions.find(x=>x.id===n.refId);
+      if(inst&&inst.approved)return false; // 승인완료 지시사항 제외
+    }
+    return !n.read; // 미읽음만 표시
+  }).slice(0,5);
+  const dashNotifEl=document.getElementById('dash-notif');
+  if(!dashNotifs.length){
+    dashNotifEl.innerHTML='<div class="empty" style="padding:20px;"><i class="fa fa-bell-slash"></i><p>없음</p></div>';
+  } else {
+    dashNotifEl.innerHTML=dashNotifs.map(n=>`<div class="ri"><div class="rdot" style="background:#f59e0b;"></div><div><b style="font-size:12.5px;">${n.title||''}</b><div class="rdate">${fmtTs(n.createdAt)}</div></div></div>`).join('');
+  }
 }
 async function readNotif(id,type){
   if(db)await db.collection(COL.notifications).doc(id).update({read:true});
@@ -838,6 +866,7 @@ function showPage(name,el,rTab){
   document.getElementById('pg-'+name).classList.add('active');
   if(el)el.classList.add('active');
   document.getElementById('topbarTitle').textContent=PT[name]||'';
+  if(name==='dashboard'){renderDash();renderNotif();}
   if(name==='services'){renderSvcList();renderSaleList();}
   if(name==='reports'){renderRepLists();popSvcSels();popAssignSels();if(rTab)showRTab(rTab);}
   if(name==='users')renderUsers();
@@ -855,8 +884,12 @@ function renderAll(){
 
 // ═══ DASHBOARD ═══
 function renderDash(){
-  rList('dash-req',C.requests.slice(0,5),r=>`<div class="rdot" style="background:#f59e0b;margin-top:4px;"></div><div class="recent-content"><span class="rtag">${sName(r.serviceId)}</span><span class="tbadge req-${r.requester}">${r.requester}</span>${r.assignees?.length?`<span style="font-size:11px;color:var(--pl);"> → ${r.assignees.map(a=>a.name).join(', ')}</span>`:''}<div class="rdate">${r.requestDate||''}</div></div>`);
-  rList('dash-inst',C.instructions.slice(0,5),r=>`<div class="rdot" style="background:var(--r);margin-top:4px;"></div><div class="recent-content"><span class="rtag">${sName(r.serviceId)}</span><span class="tbadge t${r.team}">${r.team}</span><div class="rdate">${r.instructDate||''}</div></div>`);
+  // 답변 완료된 요청사항은 대시보드에서 제외
+  const pendingReqs=C.requests.filter(r=>!r.reply).slice(0,5);
+  rList('dash-req',pendingReqs,r=>`<div class="rdot" style="background:#f59e0b;margin-top:4px;"></div><div class="recent-content"><span class="rtag">${sName(r.serviceId)}</span><span class="tbadge" style="background:#f0fdf4;color:#166534;">${r.requester}</span>${r.assignees?.length?`<span style="font-size:11px;color:var(--pl);"> → ${r.assignees.map(a=>a.name).join(', ')}</span>`:''}<div class="rdate">${r.requestDate||''}</div></div>`);
+  // 승인 완료된 지시사항은 대시보드에서 제외
+  const pendingInsts=C.instructions.filter(r=>!r.approved).slice(0,5);
+  rList('dash-inst',pendingInsts,r=>`<div class="rdot" style="background:var(--r);margin-top:4px;"></div><div class="recent-content"><span class="rtag">${sName(r.serviceId)}</span><span class="tbadge t${r.team}">${r.team}</span><div class="rdate">${r.instructDate||''}</div></div>`);
   rList('dash-con',C.consultations.slice(0,5),c=>`<div class="rdot" style="background:var(--inf);margin-top:4px;"></div><div class="recent-content"><span class="rtag">${sName(c.serviceId)}</span><b style="font-size:12.5px;">${c.dept||''}</b><div class="rdate">${c.date||''}</div></div>`);
   rList('dash-sale-con',C.salesConsultations.slice(0,5),c=>`<div class="rdot" style="background:#8b5cf6;margin-top:4px;"></div><div class="recent-content"><span class="rtag" style="background:#f5f3ff;color:#7c3aed;">${saleName(c.saleId)}</span><b style="font-size:12.5px;">${c.dept||''}</b><div class="rdate">${c.date||''}</div></div>`);
 }
@@ -959,24 +992,37 @@ function renderSaleConPanel(){
   const items=C.salesConsultations.filter(c=>c.saleId===selSaleId).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const body=document.getElementById('conBody');
   if(!items.length){body.innerHTML='<div class="empty"><i class="fa fa-comments"></i><p>협의사항이 없습니다</p></div>';return;}
+  // 1단계: 관련실과로 그룹핑
   const grp={};items.forEach(c=>{const k=c.dept||'미지정';if(!grp[k])grp[k]=[];grp[k].push(c);});
   body.innerHTML=Object.keys(grp).map(dept=>{
     const list=grp[dept];
-    const rows=list.map(c=>{
-      const topH=c.topics?.length?`<ul class="con-topics">${c.topics.map((t,ti)=>`<li><span class="con-num" style="background:#8b5cf6;">${ti+1}</span><span>${t}</span></li>`).join('')}</ul>`:'';
-      const cntH=c.content?`<div class="con-note">${nl2br(c.content)}</div>`:'';
-      return `<div class="con-row">
-        <div class="con-date">${c.date||'-'}</div>
-        <div class="con-content">${topH}${cntH}</div>
-        <div class="con-acts">
-          <button class="ia" onclick="openSaleConModal('${c.id}')"><i class="fa fa-pen"></i></button>
-          <button class="ia del" onclick="cfmDel('salesConsultations','${c.id}',renderSaleConPanel)"><i class="fa fa-trash"></i></button>
+    // 2단계: 주요협의사항 첫 항목으로 서브 그룹핑
+    const subGrp={};
+    list.forEach(c=>{const sk=c.topics?.[0]||'기타';if(!subGrp[sk])subGrp[sk]=[];subGrp[sk].push(c);});
+    const subRows=Object.keys(subGrp).map(subKey=>{
+      const subList=subGrp[subKey].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+      const rows=subList.map(c=>{
+        const topH=c.topics?.length>1?`<ul class="con-topics" style="margin-top:4px;">${c.topics.slice(1).map((t,ti)=>`<li><span class="con-num" style="background:#8b5cf6;font-size:9px;width:16px;height:16px;">${ti+2}</span><span>${t}</span></li>`).join('')}</ul>`:'';
+        const cntH=c.content?`<div class="con-note">${nl2br(c.content)}</div>`:'';
+        return `<div class="con-row" style="padding-left:8px;">
+          <div class="con-date">${c.date||'-'}</div>
+          <div class="con-content">${topH}${cntH}</div>
+          <div class="con-acts">
+            <button class="ia" onclick="openSaleConModal('${c.id}')"><i class="fa fa-pen"></i></button>
+            <button class="ia del" onclick="cfmDel('salesConsultations','${c.id}',renderSaleConPanel)"><i class="fa fa-trash"></i></button>
+          </div>
+        </div>`;
+      }).join('');
+      return `<div style="border-left:3px solid #8b5cf6;margin:8px 0 4px;padding-left:10px;">
+        <div style="font-size:12.5px;font-weight:700;color:#7c3aed;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+          <span>${subKey}</span><span style="font-size:11px;background:#f5f3ff;color:#7c3aed;padding:1px 7px;border-radius:8px;font-weight:500;">${subList.length}건</span>
         </div>
+        ${rows}
       </div>`;
     }).join('');
     return `<div class="dept-block">
       <div class="dept-head" style="background:linear-gradient(90deg,#5b21b6,#7c3aed);"><i class="fa fa-building"></i><span>${dept}</span><span class="dept-cnt">${list.length}건</span></div>
-      ${rows}
+      <div style="padding:8px 12px 4px;">${subRows}</div>
     </div>`;
   }).join('');
 }
@@ -1007,24 +1053,41 @@ function renderConPanel(){
   const items=C.consultations.filter(c=>c.serviceId===selSvcId).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const body=document.getElementById('conBody');
   if(!items.length){body.innerHTML='<div class="empty"><i class="fa fa-comments"></i><p>협의사항이 없습니다</p></div>';return;}
+  // 1단계: 관련실과(dept)로 그룹핑
   const grp={};items.forEach(c=>{const k=c.dept||'미지정';if(!grp[k])grp[k]=[];grp[k].push(c);});
   body.innerHTML=Object.keys(grp).map(dept=>{
     const list=grp[dept];
-    const rows=list.map(c=>{
-      const topH=c.topics?.length?`<ul class="con-topics">${c.topics.map((t,ti)=>`<li><span class="con-num">${ti+1}</span><span>${t}</span></li>`).join('')}</ul>`:'';
-      const cntH=c.content?`<div class="con-note">${nl2br(c.content)}</div>`:'';
-      return `<div class="con-row">
-        <div class="con-date">${c.date||'-'}</div>
-        <div class="con-content">${topH}${cntH}</div>
-        <div class="con-acts">
-          <button class="ia" onclick="openConModal('${c.id}')"><i class="fa fa-pen"></i></button>
-          <button class="ia del" onclick="cfmDel('consultations','${c.id}',renderConPanel)"><i class="fa fa-trash"></i></button>
+    // 2단계: 주요협의사항 첫 번째 항목(팀명)으로 서브 그룹핑
+    const subGrp={};
+    list.forEach(c=>{
+      const subKey=c.topics?.[0]||'기타';
+      if(!subGrp[subKey])subGrp[subKey]=[];
+      subGrp[subKey].push(c);
+    });
+    const subRows=Object.keys(subGrp).map(subKey=>{
+      const subList=subGrp[subKey].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+      const rows=subList.map(c=>{
+        const topH=c.topics?.length>1?`<ul class="con-topics" style="margin-top:4px;">${c.topics.slice(1).map((t,ti)=>`<li><span class="con-num" style="font-size:9px;width:16px;height:16px;">${ti+2}</span><span>${t}</span></li>`).join('')}</ul>`:'';
+        const cntH=c.content?`<div class="con-note">${nl2br(c.content)}</div>`:'';
+        return `<div class="con-row" style="padding-left:8px;">
+          <div class="con-date">${c.date||'-'}</div>
+          <div class="con-content">${topH}${cntH}</div>
+          <div class="con-acts">
+            <button class="ia" onclick="openConModal('${c.id}')"><i class="fa fa-pen"></i></button>
+            <button class="ia del" onclick="cfmDel('consultations','${c.id}',renderConPanel)"><i class="fa fa-trash"></i></button>
+          </div>
+        </div>`;
+      }).join('');
+      return `<div style="border-left:3px solid var(--pl2);margin:8px 0 4px;padding-left:10px;">
+        <div style="font-size:12.5px;font-weight:700;color:var(--pl);margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+          <span>${subKey}</span><span style="font-size:11px;background:#eff6ff;color:var(--pl);padding:1px 7px;border-radius:8px;font-weight:500;">${subList.length}건</span>
         </div>
+        ${rows}
       </div>`;
     }).join('');
     return `<div class="dept-block">
       <div class="dept-head"><i class="fa fa-building"></i><span>${dept}</span><span class="dept-cnt">${list.length}건</span></div>
-      ${rows}
+      <div style="padding:8px 12px 4px;">${subRows}</div>
     </div>`;
   }).join('');
 }
@@ -1048,7 +1111,7 @@ function renderReqList(){
   el.innerHTML=C.requests.map(r=>`<div class="rep-item ${selRepId===r.id&&curRepTab==='req'?'sel':''}" onclick="selRep('req','${r.id}',this)">
     <div class="rep-item-top">
       <span class="tag tag-adm" style="font-size:10px;">${sName(r.serviceId)}</span>
-      <span class="tbadge req-${r.requester}" style="font-size:10.5px;">${r.requester}</span>
+      <span class="tbadge" style="font-size:10.5px;background:#f0fdf4;color:#166534;">${r.requester}</span>
       <span style="font-size:11px;color:var(--tm);margin-left:auto;">${r.requestDate||''}</span>
     </div>
     <div class="rep-item-body">${r.content||''}</div>
@@ -1127,24 +1190,72 @@ function renderRepDetail(type,id){
     const r=C.instructions.find(x=>x.id===id);if(!r)return;
     document.getElementById('repDetailTitleText').innerHTML=`<i class="fa fa-bullhorn" style="color:var(--r);"></i>지시사항 상세`;
     document.getElementById('repEditBtn').onclick=()=>openInstModal(id);
-    document.getElementById('repDelBtn').onclick=()=>cfmDel('instructions',id,()=>{showRepEmpty();renderInstList();renderDash();});
+    // 삭제 버튼: 지시자 또는 관리자만 표시
+    const instDelBtn=document.getElementById('repDelBtn');
+    if(r.instructorUid===currentUser?.uid||currentUser?.isAdmin){
+      instDelBtn.style.display='';
+      instDelBtn.onclick=()=>cfmDel('instructions',id,()=>{showRepEmpty();renderInstList();renderDash();});
+    } else {
+      instDelBtn.style.display='none';
+    }
     const aH=r.assignees?.length?`<div class="assignee-chips">${r.assignees.map(a=>`<span class="achip">${a.name}</span>`).join('')}</div>`:'-';
+
+    // 역할 판단
+    const isInstructor = r.instructorUid && r.instructorUid===currentUser?.uid;
+    const isAssignee = r.assignees?.some(a=>a.uid===currentUser?.uid);
+
     let planH='';
     if(r.plan){
+      // 승인 완료 표시 (공통)
+      const approvedH=r.approved?
+        `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;font-size:13px;color:#15803d;font-weight:600;margin-top:8px;"><i class="fa fa-check-circle" style="margin-right:6px;"></i>승인 완료 · ${r.approvedBy||''} · ${r.approvedDate||''}</div>`
+        : isInstructor
+          ? `<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+              <button class="dp-save-btn" style="background:linear-gradient(135deg,#10b981,#059669);" onclick="approveInst('${id}')"><i class="fa fa-check" style="margin-right:6px;"></i>승인</button>
+              <button class="dp-edit-btn" onclick="showSupplementForm('${id}')"><i class="fa fa-redo" style="margin-right:5px;"></i>보완요청</button>
+            </div>`
+          : '';  // 담당자에게는 승인/보완 버튼 미표시
+
+      // 보완요청 내용 표시 (공통)
+      const suppH=r.supplement?
+        `<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;font-size:13px;color:#c2410c;margin-top:8px;">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px;"><i class="fa fa-redo" style="margin-right:5px;"></i>보완요청 · ${r.supplementDate||''} · ${r.supplementBy||''}</div>
+          ${nl2br(r.supplement)}
+        </div>`:'';
+
+      // 조치계획 수정 버튼 - 담당자만, 미승인 상태에서만
+      const editPlanBtn = (!r.approved && isAssignee)
+        ? `<button class="dp-edit-btn" style="margin-top:8px;" onclick="showPlanForm('${id}')">조치계획 수정</button>`
+        : '';
+
       planH=`<div class="dp-section">
         <div class="dp-section-title"><i class="fa fa-clipboard-list"></i>조치계획</div>
         <div class="plan-done"><div class="plan-meta">✓ 완료예정: ${r.planDue||'-'} · ${r.planBy||''}</div>${nl2br(r.plan)}</div>
-        <button class="dp-edit-btn" style="margin-top:8px;" onclick="showPlanForm('${id}')">조치계획 수정</button>
+        ${suppH}
+        ${approvedH}
+        ${editPlanBtn}
       </div>`;
     } else {
-      planH=`<div class="dp-section">
-        <div class="dp-section-title"><i class="fa fa-clipboard-list"></i>조치계획 작성</div>
-        <textarea class="dp-textarea" id="planTa" placeholder="조치 계획을 입력하세요"></textarea>
-        <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
-          <input type="date" id="planDueDt" style="border:1.5px solid var(--bd);border-radius:9px;padding:8px 12px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;" value="">
-          <button class="dp-save-btn" onclick="savePlanInline('${id}')"><i class="fa fa-save" style="margin-right:6px;"></i>저장</button>
-        </div>
-      </div>`;
+      // 조치계획 미작성 상태
+      if(isAssignee){
+        // 담당자: 조치계획 작성 가능
+        planH=`<div class="dp-section">
+          <div class="dp-section-title"><i class="fa fa-clipboard-list"></i>조치계획 작성</div>
+          <textarea class="dp-textarea" id="planTa" placeholder="조치 계획을 입력하세요"></textarea>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+            <input type="date" id="planDueDt" style="border:1.5px solid var(--bd);border-radius:9px;padding:8px 12px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;" value="">
+            <button class="dp-save-btn" onclick="savePlanInline('${id}')"><i class="fa fa-save" style="margin-right:6px;"></i>저장</button>
+          </div>
+        </div>`;
+      } else {
+        // 지시자 또는 기타: 조치계획 대기 안내
+        planH=`<div class="dp-section">
+          <div class="dp-section-title"><i class="fa fa-clipboard-list"></i>조치계획</div>
+          <div style="background:#f8fafc;border:1px dashed var(--bd);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--tm);text-align:center;">
+            <i class="fa fa-hourglass-half" style="margin-right:6px;opacity:.5;"></i>담당자의 조치계획 작성을 기다리는 중입니다
+          </div>
+        </div>`;
+      }
     }
     document.getElementById('repDetailBody').innerHTML=`
       <div class="dp-orig">
@@ -1184,8 +1295,14 @@ async function saveReplyInline(reqId){
   const data={reply,replyDate:new Date().toISOString().split('T')[0],replyBy:currentUser?.name||''};
   showLoad(true);await updDB('requests',reqId,data);
   const i=C.requests.findIndex(x=>x.id===reqId);if(i>=0)C.requests[i]={...C.requests[i],...data};
+  // 답변 완료 시 관련 알림 읽음 처리 → 대시보드 나의 알림에서 사라짐
+  const relNotifs=C.notifications.filter(n=>n.refId===reqId&&n.type==='request'&&!n.read);
+  for(const n of relNotifs){
+    if(db)await db.collection(COL.notifications).doc(n.id).update({read:true});
+    else n.read=true;
+  }
   showLoad(false);showToast('답변이 저장되었습니다.','success');
-  renderReqList();renderRepDetail('req',reqId);
+  renderReqList();renderRepDetail('req',reqId);renderNotif();renderDash();
 }
 
 async function savePlanInline(instId){
@@ -1194,7 +1311,78 @@ async function savePlanInline(instId){
   const data={plan,planDue:document.getElementById('planDueDt')?.value||'',planBy:currentUser?.name||''};
   showLoad(true);await updDB('instructions',instId,data);
   const i=C.instructions.findIndex(x=>x.id===instId);if(i>=0)C.instructions[i]={...C.instructions[i],...data};
+  // 조치계획 완료 → 지시자에게 알림 전송
+  const inst=C.instructions.find(x=>x.id===instId);
+  if(inst?.instructorUid&&inst.instructorUid!==currentUser?.uid){
+    await sendNotif(inst.instructorUid,inst.instructorName,'plan',instId,
+      `[조치계획 완료] ${sName(inst.serviceId)}`,
+      `${currentUser?.name||''}이(가) 조치계획을 작성했습니다: ${plan.substring(0,40)}`);
+  }
   showLoad(false);showToast('조치계획이 저장되었습니다.','success');
+  renderInstList();renderRepDetail('inst',instId);renderDash();renderNotif();
+}
+
+// 지시사항 승인
+async function approveInst(instId){
+  const data={approved:true,approvedBy:currentUser?.name||'',approvedDate:new Date().toISOString().split('T')[0]};
+  showLoad(true);await updDB('instructions',instId,data);
+  const i=C.instructions.findIndex(x=>x.id===instId);if(i>=0)C.instructions[i]={...C.instructions[i],...data};
+  // 승인 시 관련 알림 읽음 처리
+  const relNotifs=C.notifications.filter(n=>n.refId===instId&&!n.read);
+  for(const n of relNotifs){
+    if(db)await db.collection(COL.notifications).doc(n.id).update({read:true});
+    else n.read=true;
+  }
+  // 담당자에게 승인 알림
+  const inst=C.instructions.find(x=>x.id===instId);
+  if(inst?.assignees?.length){
+    for(const a of inst.assignees){
+      await sendNotif(a.uid,a.name,'instruction',instId,
+        `[조치계획 승인] ${sName(inst.serviceId)}`,
+        `${currentUser?.name||''}이(가) 조치계획을 승인했습니다.`);
+    }
+  }
+  showLoad(false);showToast('승인이 완료되었습니다.','success');
+  renderInstList();renderRepDetail('inst',instId);renderDash();renderNotif();
+}
+
+// 보완요청 폼 표시
+function showSupplementForm(instId){
+  const r=C.instructions.find(x=>x.id===instId);if(!r)return;
+  const body=document.getElementById('repDetailBody');
+  const existing=body.querySelector('#suppFormArea');
+  if(existing){existing.remove();return;}
+  const div=document.createElement('div');div.id='suppFormArea';
+  div.style.cssText='margin-top:12px;';
+  div.innerHTML=`<div class="dp-section">
+    <div class="dp-section-title"><i class="fa fa-redo" style="color:#f59e0b;"></i>보완요청 내용</div>
+    <textarea class="dp-textarea" id="suppTa" placeholder="보완이 필요한 내용을 입력하세요" style="min-height:80px;">${r.supplement||''}</textarea>
+    <div style="margin-top:8px;">
+      <button class="dp-save-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);" onclick="saveSupplement('${instId}')">
+        <i class="fa fa-paper-plane" style="margin-right:6px;"></i>보완요청 전송
+      </button>
+    </div>
+  </div>`;
+  body.appendChild(div);
+}
+
+// 보완요청 저장 및 담당자 알림
+async function saveSupplement(instId){
+  const supp=(document.getElementById('suppTa')?.value||'').trim();
+  if(!supp){showToast('보완 내용을 입력하세요.','danger');return;}
+  const data={supplement:supp,supplementBy:currentUser?.name||'',supplementDate:new Date().toISOString().split('T')[0],approved:false};
+  showLoad(true);await updDB('instructions',instId,data);
+  const i=C.instructions.findIndex(x=>x.id===instId);if(i>=0)C.instructions[i]={...C.instructions[i],...data};
+  // 담당자에게 보완요청 알림
+  const inst=C.instructions.find(x=>x.id===instId);
+  if(inst?.assignees?.length){
+    for(const a of inst.assignees){
+      await sendNotif(a.uid,a.name,'instruction',instId,
+        `[보완요청] ${sName(inst.serviceId)}`,
+        `${currentUser?.name||''}이(가) 보완을 요청했습니다: ${supp.substring(0,40)}`);
+    }
+  }
+  showLoad(false);showToast('보완요청이 전송되었습니다.','success');
   renderInstList();renderRepDetail('inst',instId);
 }
 
@@ -1317,18 +1505,40 @@ function setAssignees(lid,assignees){if(!assignees?.length)return;setTimeout(()=
 
 function openReqModal(id){
   popSvcSels();popAssignSels();
+  // 요청자 드롭다운 - 활성 회원 목록으로 채우기
+  const reqSel=document.getElementById('req-requester');
+  reqSel.innerHTML='<option value="">-- 선택 --</option>';
+  C.users.filter(u=>u.status==='active').forEach(u=>{
+    const opt=document.createElement('option');
+    opt.value=`${u.name}(${u.role})`;
+    opt.textContent=`${u.name}(${u.role})`;
+    reqSel.appendChild(opt);
+  });
   const m=new bootstrap.Modal(document.getElementById('reqModal'));
   cf(['req-id','req-content']);document.getElementById('req-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('req-requester').value='사장님';
-  if(id){const r=C.requests.find(x=>x.id===id);if(r){document.getElementById('reqModalTitle').textContent='요청사항 수정';sv('req-id',r.id);document.getElementById('req-svcId').value=r.serviceId||'';document.getElementById('req-requester').value=r.requester||'사장님';sv('req-date',r.requestDate||'');sv('req-content',r.content||'');setAssignees('req-assign',r.assignees);}}
-  else document.getElementById('reqModalTitle').textContent='요청사항 추가';
+  if(id){
+    const r=C.requests.find(x=>x.id===id);
+    if(r){
+      document.getElementById('reqModalTitle').textContent='요청사항 수정';
+      sv('req-id',r.id);
+      document.getElementById('req-svcId').value=r.serviceId||'';
+      document.getElementById('req-requester').value=r.requester||'';
+      sv('req-date',r.requestDate||'');
+      sv('req-content',r.content||'');
+      setAssignees('req-assign',r.assignees);
+    }
+  } else {
+    document.getElementById('reqModalTitle').textContent='요청사항 추가';
+  }
   m.show();
 }
 async function saveReq(){
   const svcId=g('req-svcId'),content=g('req-content').trim();
+  const requester=g('req-requester');
   if(!svcId||!content){showToast('용역 선택과 내용은 필수입니다.','danger');return;}
+  if(!requester){showToast('요청자를 선택해 주세요.','danger');return;}
   const assignees=getAssignees('req-assign');
-  const data={serviceId:svcId,requester:g('req-requester'),requestDate:g('req-date'),content,assignees};
+  const data={serviceId:svcId,requester,requestDate:g('req-date'),content,assignees};
   const id=g('req-id');showLoad(true);let nId=id;
   if(id){await updDB('requests',id,data);const i=C.requests.findIndex(x=>x.id===id);if(i>=0)C.requests[i]={...C.requests[i],...data};}
   else{nId=await addDB('requests',data);if(db)await loadCol('requests');}
@@ -1351,7 +1561,7 @@ async function saveInst(){
   const svcId=g('inst-svcId'),content=g('inst-content').trim();
   if(!svcId||!content){showToast('용역 선택과 내용은 필수입니다.','danger');return;}
   const assignees=getAssignees('inst-assign');
-  const data={serviceId:svcId,team:g('inst-team'),instructDate:g('inst-date'),content,assignees};
+  const data={serviceId:svcId,team:g('inst-team'),instructDate:g('inst-date'),content,assignees,instructorUid:currentUser?.uid||'',instructorName:currentUser?.name||''};
   const id=g('inst-id');showLoad(true);let nId=id;
   if(id){await updDB('instructions',id,data);const i=C.instructions.findIndex(x=>x.id===id);if(i>=0)C.instructions[i]={...C.instructions[i],...data};}
   else{nId=await addDB('instructions',data);if(db)await loadCol('instructions');}
@@ -1409,6 +1619,65 @@ function sv(id,v){const e=document.getElementById(id);if(e)e.value=v;}
 function cf(ids){ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';})}
 function nl2br(s){return(s||'').replace(/\n/g,'<br>');}
 function esc(s){return(s||'').replace(/'/g,"\\'");}
+// ═══ EXPORT / IMPORT ═══
+function exportData(){
+  const exportObj={
+    version:2,
+    exportDate:new Date().toISOString(),
+    data:{
+      services:C.services,
+      consultations:C.consultations,
+      sales:C.sales,
+      salesConsultations:C.salesConsultations,
+      requests:C.requests,
+      instructions:C.instructions,
+      users:C.users
+    }
+  };
+  const blob=new Blob([JSON.stringify(exportObj,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const dt=new Date();
+  a.download=`상원그룹_백업_${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  showToast('백업 파일이 저장되었습니다.','success');
+}
+
+async function importData(event){
+  const file=event.target.files?.[0];
+  if(!file){return;}
+  if(!confirm('불러오기 시 현재 데이터가 추가됩니다. 계속할까요?')){event.target.value='';return;}
+  try{
+    const text=await file.text();
+    const obj=JSON.parse(text);
+    const data=obj.data||obj;
+    showLoad(true);
+    const colMap={services:'services',consultations:'consultations',sales:'sales',salesConsultations:'salesConsultations',requests:'requests',instructions:'instructions'};
+    for(const[key,colName]of Object.entries(colMap)){
+      if(data[key]?.length){
+        for(const item of data[key]){
+          const{id,...rest}=item;
+          if(db){
+            await db.collection(COL[colName]).add({...rest,importedAt:firebase.firestore.FieldValue.serverTimestamp()});
+          } else {
+            C[colName].unshift({...item,id:'imp_'+Date.now()+'_'+Math.random().toString(36).slice(2,5)});
+          }
+        }
+      }
+    }
+    if(db){await Promise.allSettled(Object.keys(COL).map(k=>loadCol(k)));}
+    showLoad(false);
+    event.target.value='';
+    renderAll();
+    showToast('데이터 불러오기가 완료되었습니다.','success');
+  }catch(e){
+    showLoad(false);event.target.value='';
+    showToast('파일 형식이 올바르지 않습니다.','danger');
+    console.error(e);
+  }
+}
+
 function showToast(msg,type='info',dur=3000){
   const wrap=document.getElementById('toastWrap');
   const el=document.createElement('div');
