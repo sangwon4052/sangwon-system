@@ -866,11 +866,30 @@ function showPage(name,el,rTab){
   document.getElementById('pg-'+name).classList.add('active');
   if(el)el.classList.add('active');
   document.getElementById('topbarTitle').textContent=PT[name]||'';
-  if(name==='dashboard'){renderDash();renderNotif();}
+  if(name==='dashboard'){refreshDash();}
   if(name==='services'){renderSvcList();renderSaleList();}
   if(name==='reports'){renderRepLists();popSvcSels();popAssignSels();if(rTab)showRTab(rTab);}
   if(name==='users')renderUsers();
   if(name==='settings')loadCfgForm();
+}
+
+// 대시보드 진입 시 핵심 컬렉션 재로드 후 렌더링
+async function refreshDash(){
+  if(db){
+    showLoad(true);
+    // requests, instructions, notifications 3개만 재로드 (빠름)
+    await Promise.allSettled([
+      loadCol('requests'),
+      loadCol('instructions'),
+      loadCol('notifications')
+    ]);
+    showLoad(false);
+  }
+  // 통계카드 업데이트
+  document.getElementById('stat-r').textContent=C.requests.length;
+  document.getElementById('stat-i').textContent=C.instructions.length;
+  renderDash();
+  renderNotif();
 }
 
 // ═══ RENDER ALL ═══
